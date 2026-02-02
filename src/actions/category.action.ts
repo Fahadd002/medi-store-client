@@ -20,7 +20,7 @@ export const getCategories = async (
 
 export const createCategory = async (data: CategoryData) => {
   const res = await categoryService.createCategory(data);
-  updateTag("categories"); // Revalidate the cache tag
+  updateTag("categories"); 
   return res;
 };
 

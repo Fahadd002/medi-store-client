@@ -7,8 +7,8 @@ export const sellerRoutes: Route[] = [
             {
                 title: "Home",
                 url: "/",
-                icon: "Home"
-            }
+                icon: "Home",
+            },
         ],
     },
     {
@@ -17,8 +17,13 @@ export const sellerRoutes: Route[] = [
             {
                 title: "Manage Medicines",
                 url: "/seller-dashboard/medicines",
-                icon: "Package"
-            }
+                icon: "Package",
+            },
+            {
+                title: "Add Medicine",
+                url: "/seller-dashboard/add-medicines",
+                icon: "PlusCircle",
+            },
         ],
     },
     {
@@ -27,8 +32,8 @@ export const sellerRoutes: Route[] = [
             {
                 title: "View Orders",
                 url: "/seller-dashboard/orders",
-                icon: "ShoppingBag"
-            }
+                icon: "ShoppingBag",
+            },
         ],
-    }
+    },
 ];

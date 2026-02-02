@@ -5,12 +5,12 @@ import {
   Package, 
   ShoppingBag, 
   FolderTree,
-  Plus,
   User as UserIcon,
   FileText,
   ShoppingCart,
   CreditCard,
-  LogOut
+  LogOut,
+  PlusCircle,
 } from "lucide-react"
 
 import {
@@ -49,7 +49,7 @@ const iconMap: Record<string, React.ReactNode> = {
   Package: <Package className="h-4 w-4" />,
   ShoppingBag: <ShoppingBag className="h-4 w-4" />,
   FolderTree: <FolderTree className="h-4 w-4" />,
-  Plus: <Plus className="h-4 w-4" />,
+  PlusCircle: <PlusCircle className="h-4 w-4" />,
   User: <UserIcon className="h-4 w-4" />,
   FileText: <FileText className="h-4 w-4" />,
   ShoppingCart: <ShoppingCart className="h-4 w-4" />,

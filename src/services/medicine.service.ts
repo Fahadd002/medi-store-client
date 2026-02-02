@@ -3,16 +3,27 @@ import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
 
-export interface CategoryData {
+export interface MedicineData {
   name: string;
-  description?: string;
+  description: string;
+  basePrice: number;
+  discountPercent?: number;
+  stock: number;
+  manufacturer: string;
+  expiryDate?: string;
+  isActive?: boolean;
+  categoryId: string;
 }
 
-export interface GetCategoriesParams {
+export interface GetMedicinesParams {
   search?: string;
+  categoryId?: string;
+  sellerId?: string;
   page?: string;
   limit?: string;
   skip?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface ServiceOptions {
@@ -20,33 +31,26 @@ export interface ServiceOptions {
   revalidate?: number;
 }
 
-export const categoryService = {
-  getCategories: async (
-    params?: GetCategoriesParams,
+export const medicineService = {
+  getMedicines: async (
+    params?: GetMedicinesParams,
     options?: ServiceOptions
   ) => {
     try {
-      const url = new URL(`${API_URL}/categories`);
+      const url = new URL(`${API_URL}/medicines`);
 
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
           if (value !== undefined && value !== null && value !== "") {
-            url.searchParams.append(key, value);
+            url.searchParams.append(key, value.toString());
           }
         });
       }
 
       const config: RequestInit = {};
-
-      if (options?.cache) {
-        config.cache = options.cache;
-      }
-
-      if (options?.revalidate) {
-        config.next = { revalidate: options.revalidate };
-      }
-
-      config.next = { ...config.next, tags: ["categories"] };
+      if (options?.cache) config.cache = options.cache;
+      if (options?.revalidate) config.next = { revalidate: options.revalidate };
+      config.next = { ...config.next, tags: ["medicines"] };
 
       const res = await fetch(url.toString(), config);
       const data = await res.json();
@@ -57,12 +61,22 @@ export const categoryService = {
     }
   },
 
-  createCategory: async (data: CategoryData) => {
+  getMedicineById: async (id: string) => {
+    try {
+      const res = await fetch(`${API_URL}/medicines/${id}`);
+      const data = await res.json();
+      return { data, error: null };
+    } catch {
+      return { data: null, error: { message: "Something Went Wrong" } };
+    }
+  },
+
+  createMedicine: async (data: MedicineData) => {
     try {
       const cookieStore = await cookies();
       const cookieHeader = cookieStore.toString();
 
-      const res = await fetch(`${API_URL}/categories`, {
+      const res = await fetch(`${API_URL}/medicines`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,9 +86,8 @@ export const categoryService = {
       });
 
       const result = await res.json();
-
       if (!res.ok) {
-        return { data: null, error: { message: result.error || "Error: Category not created." } };
+        return { data: null, error: { message: result.error || "Error: Medicine not created." } };
       }
 
       return { data: result, error: null };
@@ -83,12 +96,12 @@ export const categoryService = {
     }
   },
 
-  updateCategory: async (id: string, data: CategoryData) => {
+  updateMedicine: async (id: string, data: Partial<MedicineData>) => {
     try {
       const cookieStore = await cookies();
       const cookieHeader = cookieStore.toString();
 
-      const res = await fetch(`${API_URL}/categories/${id}`, {
+      const res = await fetch(`${API_URL}/medicines/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -98,9 +111,8 @@ export const categoryService = {
       });
 
       const result = await res.json();
-
       if (!res.ok) {
-        return { data: null, error: { message: result.error || "Error: Category not updated." } };
+        return { data: null, error: { message: result.error || "Error: Medicine not updated." } };
       }
 
       return { data: result, error: null };
@@ -109,12 +121,12 @@ export const categoryService = {
     }
   },
 
-  deleteCategory: async (id: string) => {
+  deleteMedicine: async (id: string) => {
     try {
       const cookieStore = await cookies();
       const cookieHeader = cookieStore.toString();
 
-      const res = await fetch(`${API_URL}/categories/${id}`, {
+      const res = await fetch(`${API_URL}/medicines/${id}`, {
         method: "DELETE",
         headers: {
           Cookie: cookieHeader,
@@ -122,24 +134,11 @@ export const categoryService = {
       });
 
       const result = await res.json();
-
       if (!res.ok) {
-        return { data: null, error: { message: result.error || "Error: Category not deleted." } };
+        return { data: null, error: { message: result.error || "Error: Medicine not deleted." } };
       }
 
       return { data: result, error: null };
-    } catch {
-      return { data: null, error: { message: "Something Went Wrong" } };
-    }
-  },
-
-  // Optional: Get single category by ID
-  getCategoryById: async (id: string) => {
-    try {
-      const res = await fetch(`${API_URL}/categories/${id}`);
-      const data = await res.json();
-
-      return { data, error: null };
     } catch {
       return { data: null, error: { message: "Something Went Wrong" } };
     }
