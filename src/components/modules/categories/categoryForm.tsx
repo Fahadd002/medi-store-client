@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,23 +30,36 @@ interface CategoryFormProps {
 }
 
 export function CategoryForm({ onSuccess }: CategoryFormProps) {
+  // UI state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // stable ref guard to avoid stale-closure double-submits inside useForm's onSubmit
+  const submissionLock = useRef(false);
+
   const form = useForm({
     defaultValues: {
       name: "",
       description: "",
     },
     onSubmit: async ({ value }) => {
+      // guard using ref (stable across renders / preserved in closure)
+      if (submissionLock.current) return;
+      submissionLock.current = true;
+      setIsSubmitting(true);
+
       const validationResult = formSchema.safeParse(value);
       if (!validationResult.success) {
         const firstError = validationResult.error.issues[0];
         toast.error(firstError?.message || "Validation failed");
+        submissionLock.current = false;
+        setIsSubmitting(false);
         return;
       }
 
       const toastId = toast.loading("Creating category...");
       try {
         const { data, error } = await createCategory(value);
-        
+
         if (error) {
           toast.error(error.message, { id: toastId });
           return;
@@ -55,6 +69,9 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
         onSuccess?.();
       } catch (err) {
         toast.error("Something went wrong, please try again.", { id: toastId });
+      } finally {
+        submissionLock.current = false;
+        setIsSubmitting(false);
       }
     },
   });
@@ -67,7 +84,8 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            // pass the native event into the form handler to avoid double-invocation
+            form.handleSubmit(e as unknown as Event);
           }}
         >
           <FieldGroup>
@@ -75,10 +93,7 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
             <form.Field
               name="name"
               validators={{
-                onChange: ({ value }) => 
-                  !value || value.trim().length < 2 
-                    ? "Name must be at least 2 characters" 
-                    : undefined,
+                onChange: ({ value }) => !value || value.trim().length < 2  ? "Name must be at least 2 characters" : undefined,
               }}
             >
               {(field) => {
@@ -158,8 +173,10 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
             <Button
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
             >
-              Create Category
+              {isSubmitting ? "Creating..." : "Create Category"}
             </Button>
           </CardFooter>
         </form>

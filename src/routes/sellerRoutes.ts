@@ -12,27 +12,12 @@ export const sellerRoutes: Route[] = [
         ],
     },
     {
-        title: "Dashboard",
-        items: [
-            {
-                title: "Overview",
-                url: "/seller/dashboard",
-                icon: "Home"
-            }
-        ],
-    },
-    {
         title: "Inventory",
         items: [
             {
                 title: "Manage Medicines",
-                url: "/seller/medicines",
+                url: "/seller-dashboard/medicines",
                 icon: "Package"
-            },
-            {
-                title: "Add Medicine",
-                url: "/seller/medicines/add",
-                icon: "Plus"
             }
         ],
     },
@@ -41,7 +26,7 @@ export const sellerRoutes: Route[] = [
         items: [
             {
                 title: "View Orders",
-                url: "/seller/orders",
+                url: "/seller-dashboard/orders",
                 icon: "ShoppingBag"
             }
         ],

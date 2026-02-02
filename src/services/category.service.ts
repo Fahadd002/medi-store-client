@@ -90,7 +90,7 @@ export const categoryService = {
       const cookieHeader = cookieStore.toString();
 
       const res = await fetch(`${API_URL}/categories/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieHeader,

@@ -109,9 +109,9 @@ export function CategoriesTable() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const skip = (page - 1) * parseInt(limit);
-      
+
       const { data, error } = await getCategories(
         {
           search,
@@ -132,7 +132,7 @@ export function CategoriesTable() {
         setCategories(data.data || []);
         setPagination(data.pagination);
         setTotalPages(data.pagination?.totalPage || 1);
-        
+
         if (data.data?.length === 0 && search) {
           toast.info("No categories found matching your search");
         }
@@ -173,16 +173,16 @@ export function CategoriesTable() {
     setDeleteLoading(true);
     try {
       const { data, error } = await deleteCategory(categoryToDelete.id);
-      
+
       if (error) {
         toast.error(error.message);
         return;
       }
-      
+
       toast.success("Category deleted successfully", {
         description: `${categoryToDelete.name} has been removed from the system`,
       });
-      
+
       setIsDeleteAlertOpen(false);
       setCategoryToDelete(null);
       fetchCategories();
@@ -202,10 +202,10 @@ export function CategoriesTable() {
   const stats = useMemo(() => {
     const totalMedicines = categories.reduce((sum, cat) => sum + cat._count.medicines, 0);
     const maxMedicines = Math.max(...categories.map(c => c._count.medicines), 0);
-    const avgMedicines = categories.length > 0 
-      ? Math.round(totalMedicines / categories.length) 
+    const avgMedicines = categories.length > 0
+      ? Math.round(totalMedicines / categories.length)
       : 0;
-    
+
     return {
       totalCategories: categories.length,
       totalMedicines,
@@ -238,8 +238,7 @@ export function CategoriesTable() {
   return (
     <div className="h-full flex flex-col">
       {/* Header Section - Fixed at top */}
-      <div className="">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Medicine Categories
@@ -248,7 +247,7 @@ export function CategoriesTable() {
               Manage and organize your medicine inventory by categories
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
@@ -302,7 +301,7 @@ export function CategoriesTable() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Categories</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalCategories}</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-2">{pagination?.total}</p>
                 </div>
                 <div className="p-3 bg-green-50 rounded-lg">
                   <Package className="h-6 w-6 text-green-600" />
@@ -315,7 +314,7 @@ export function CategoriesTable() {
           </Card>
 
           <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="pt-6">
+            <CardContent>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Medicines</p>
@@ -366,50 +365,37 @@ export function CategoriesTable() {
           </Card>
         </div>
 
-        {/* Controls Section */}
-        <Card className="border-gray-200 shadow-sm mb-6">
-          <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="relative flex-1 w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search categories by name or description..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 w-full md:w-auto md:min-w-[320px]"
-                />
-              </div>
-              
-              <div className="flex items-center gap-3 w-full md:w-auto">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-gray-500" />
-                  <Select value={limit} onValueChange={setLimit}>
-                    <SelectTrigger className="w-[100px] border-gray-300">
-                      <SelectValue placeholder="Rows" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10 rows</SelectItem>
-                      <SelectItem value="20">20 rows</SelectItem>
-                      <SelectItem value="50">50 rows</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Data Table Section - Scrollable */}
       <div className="flex-1 flex flex-col min-h-0">
         <Card className="border-gray-200 shadow-sm flex-1 flex flex-col min-h-0">
-          <CardHeader className="bg-gray-50 border-b">
-            <CardTitle className="text-gray-900">Categories</CardTitle>
-            <CardDescription>
-              {pagination?.total || 0} total categories • Showing {categories.length} results
-            </CardDescription>
-          </CardHeader>
-          
+          <div className="flex flex-col md:flex-row items-center justify-between px-6">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search categories by name or description..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 w-full md:w-auto md:min-w-[320px]"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-gray-500" />
+                <Select value={limit} onValueChange={setLimit}>
+                  <SelectTrigger className="w-[100px] border-gray-300">
+                    <SelectValue placeholder="Rows" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10 rows</SelectItem>
+                    <SelectItem value="20">20 rows</SelectItem>
+                    <SelectItem value="50">50 rows</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
           <CardContent className="p-0 flex-1 overflow-hidden">
             <div className="h-full overflow-auto">
               <div className="min-w-full">
@@ -462,8 +448,8 @@ export function CategoriesTable() {
                             <p className="text-gray-500 text-sm">
                               {search ? "Try a different search term" : "Get started by creating a category"}
                             </p>
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               className="mt-2"
                               onClick={() => setIsCreateDialogOpen(true)}
                             >
@@ -475,7 +461,7 @@ export function CategoriesTable() {
                       </TableRow>
                     ) : (
                       categories.map((category) => (
-                        <TableRow 
+                        <TableRow
                           key={category.id}
                           className="hover:bg-gray-50 transition-colors"
                         >
@@ -505,7 +491,7 @@ export function CategoriesTable() {
                             </TooltipProvider>
                           </TableCell>
                           <TableCell>
-                            <Badge 
+                            <Badge
                               className={getMedicinesBadgeColor(category._count.medicines)}
                             >
                               {category._count.medicines} {category._count.medicines === 1 ? 'medicine' : 'medicines'}
@@ -534,7 +520,7 @@ export function CategoriesTable() {
                                   View Medicines
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem 
+                                <DropdownMenuItem
                                   onClick={() => handleDeleteClick(category)}
                                   className="text-red-600 focus:text-red-600 focus:bg-red-50"
                                 >
@@ -560,7 +546,7 @@ export function CategoriesTable() {
                 Showing page {page} of {totalPages} •{" "}
                 {pagination?.total || 0} total items
               </div>
-              
+
               <PaginationComponent
                 currentPage={page}
                 totalPages={totalPages}
@@ -626,14 +612,13 @@ export function CategoriesTable() {
                 </span>
               </div>
             </div>
-            
+
             {categoryToDelete._count.medicines > 0 && (
               <InfoAlert
                 variant="warning"
                 message="Warning"
-                description={`This category contains ${categoryToDelete._count.medicines} medicine${
-                  categoryToDelete._count.medicines !== 1 ? "s" : ""
-                }. All associated medicines will also be removed.`}
+                description={`This category contains ${categoryToDelete._count.medicines} medicine${categoryToDelete._count.medicines !== 1 ? "s" : ""
+                  }. All associated medicines will also be removed.`}
               />
             )}
           </div>
