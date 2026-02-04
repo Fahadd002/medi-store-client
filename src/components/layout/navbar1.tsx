@@ -190,13 +190,18 @@ export async function Navbar() {
 
                 {/* Logout with Better Auth */}
                 <DropdownMenuItem>
-                   <Link 
-                    href="/logout"
-                    className="flex items-center gap-2 w-full"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
-                  </Link>
+                  <form action="/logout" method="POST" className="w-full">
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 w-full rounded-md p-3 text-sm font-medium
+               text-red-600 hover:bg-red-50
+               dark:text-red-400 dark:hover:bg-red-900/20"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  </form>
+
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -313,17 +318,18 @@ export async function Navbar() {
                           {dashboardTitle}
                         </Link>
                       </Button>
-                      <form action="/api/auth/signout" method="POST" className="w-full">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full justify-start h-11 text-red-600 border-red-200 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:hover:border-red-700 dark:hover:bg-red-900/20 rounded-lg"
+                      <form action="/logout" method="POST" className="w-full">
+                        <button
                           type="submit"
+                          className="flex items-center gap-2 w-full rounded-md p-3 text-sm font-medium
+               text-red-600 hover:bg-red-50
+               dark:text-red-400 dark:hover:bg-red-900/20"
                         >
-                          <LogOut className="h-4 w-4 mr-2" />
-                          Log out
-                        </Button>
+                          <LogOut className="h-4 w-4" />
+                          Logout
+                        </button>
                       </form>
+
                     </>
                   ) : (
                     <>

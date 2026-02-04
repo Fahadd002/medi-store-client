@@ -8,7 +8,6 @@ export interface MedicineData {
   description: string;
   basePrice: number;
   discountPercent?: number;
-  stock: number;
   manufacturer: string;
   expiryDate?: string;
   isActive?: boolean;
