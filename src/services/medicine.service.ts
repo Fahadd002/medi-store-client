@@ -59,6 +59,42 @@ export const medicineService = {
       return { data: null, error: { message: "Something Went Wrong" } };
     }
   },
+  
+  getMyMedicines: async (
+    params?: GetMedicinesParams,
+    options?: ServiceOptions
+  ) => {
+    try {
+      const url = new URL(`${API_URL}/medicines/myMedicines`);
+      const cookieStore = await cookies();
+      const cookieHeader = cookieStore.toString();
+
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.append(key, value.toString());
+          }
+        });
+      }
+
+      const config: RequestInit = {
+        headers: {
+          Cookie: cookieHeader,
+        }
+      };
+      
+      if (options?.cache) config.cache = options.cache;
+      if (options?.revalidate) config.next = { revalidate: options.revalidate };
+      config.next = { ...config.next, tags: ["medicines"] };
+
+      const res = await fetch(url.toString(), config);
+      const data = await res.json();
+
+      return { data, error: null };
+    } catch {
+      return { data: null, error: { message: "Something Went Wrong" } };
+    }
+  },
 
   getMedicineById: async (id: string) => {
     try {

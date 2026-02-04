@@ -22,6 +22,25 @@ export const getMedicines = async (
   return await medicineService.getMedicines(params, options);
 };
 
+export const getMyMedicines = async (
+  params?: {
+    search?: string;
+    categoryId?: string;
+    sellerId?: string;
+    page?: string;
+    limit?: string;
+    skip?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  },
+  options?: {
+    cache?: RequestCache;
+    revalidate?: number;
+  }
+) => {
+  return await medicineService.getMyMedicines(params, options); 
+};
+
 export const getMedicineById = async (id: string) => {
   return await medicineService.getMedicineById(id);
 };

@@ -22,7 +22,7 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { getMedicines, createMedicine, updateMedicine, deleteMedicine } from "@/actions/medicine.action";
+import { getMyMedicines, createMedicine, updateMedicine, deleteMedicine } from "@/actions/medicine.action";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -149,7 +149,7 @@ export default function MedicinesPage() {
       setLoading(true);
       const skip = (page - 1) * parseInt(limit);
 
-      const { data, error } = await getMedicines(
+      const { data, error } = await getMyMedicines(
         {
           search,
           categoryId: categoryFilter || undefined,
@@ -682,7 +682,7 @@ export default function MedicinesPage() {
                     <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {medicine.photoUrl ? (
-                          <div className="h-10 w-10 flex-shrink-0 hover:cursor-pointer">
+                          <div className="h-10 w-10 shrink-0 hover:cursor-pointer">
                             <img
                               src={medicine.photoUrl}
                               alt={medicine.name}
