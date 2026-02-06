@@ -1,11 +1,15 @@
 import { Navbar } from '@/components/layout/navbar1';
+import { CartProvider } from '@/contexts/cart-context';
 import React from 'react';
 
-const CommonLayout = ({children}:{children:React.ReactNode}) => {
+const CommonLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div>
-            <Navbar />
-            {children}
+            <CartProvider>
+                <Navbar />
+                {children}
+            </CartProvider>
+
         </div>
     );
 };

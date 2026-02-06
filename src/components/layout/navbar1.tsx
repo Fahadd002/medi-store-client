@@ -1,5 +1,6 @@
+// components/layout/navbar1.tsx
 import Link from "next/link";
-import { Menu, Phone, ShoppingCart, User, Truck, Pill, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, Phone, User, Truck, Pill, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -22,6 +23,15 @@ import {
 import { ModeToggle } from "./ModeToggle";
 import { userService } from "@/services/user.service";
 import { getAuthenticatedPath, getDashboardTitle } from "@/lib/role-utils";
+import { CartButton } from "./cart-button";
+
+interface UserSession {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 
 export async function Navbar() {
   const { data } = await userService.getSession();
@@ -38,28 +48,6 @@ export async function Navbar() {
 
   return (
     <header className="w-full border-b bg-background sticky top-0 z-50 shadow-sm">
-      {/* Top Info Bar */}
-      <div className="hidden border-b bg-gradient-to-r from-emerald-600 to-emerald-700 py-1.5 md:block">
-        <div className="container mx-auto flex items-center justify-between px-4 text-xs font-medium text-white/90">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5">
-              <Phone className="h-3 w-3" /> +880 1234-567890
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Truck className="h-3 w-3" /> Free Delivery Over ৳1000
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/help" className="hover:text-emerald-200 transition-colors">
-              Help Center
-            </Link>
-            <Link href="/track" className="hover:text-emerald-200 transition-colors">
-              Order Tracking
-            </Link>
-          </div>
-        </div>
-      </div>
-
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo - Left */}
         <div className="flex items-center justify-start flex-1">
@@ -102,19 +90,7 @@ export async function Navbar() {
         {/* Right Actions - Right */}
         <div className="flex items-center justify-end flex-1 gap-3">
           {/* Cart Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative h-10 w-10 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-full"
-            asChild
-          >
-            <Link href="/cart">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white ring-2 ring-white dark:ring-gray-950">
-                0
-              </span>
-            </Link>
-          </Button>
+          <CartButton />
 
           {/* Shop Medicines Button */}
           <Button
@@ -129,7 +105,7 @@ export async function Navbar() {
           <div className="hidden h-6 w-[1px] bg-border md:block" />
 
           {/* User Menu */}
-          {isLoggedIn ? (
+          {isLoggedIn && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -149,14 +125,14 @@ export async function Navbar() {
                   </div>
                   <div className="flex flex-col space-y-0.5">
                     <p className="text-sm font-semibold leading-none text-gray-900 dark:text-white">
-                      {user?.name}
+                      {user.name}
                     </p>
                     <p className="text-[12px] text-muted-foreground truncate max-w-[150px]">
-                      {user?.email}
+                      {user.email}
                     </p>
                     <div className="flex items-center gap-1 mt-1">
                       <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
-                        {user?.role?.toUpperCase()}
+                        {user.role.toUpperCase()}
                       </span>
                     </div>
                   </div>
@@ -188,20 +164,17 @@ export async function Navbar() {
 
                 <DropdownMenuSeparator className="bg-emerald-100 dark:bg-emerald-800" />
 
-                {/* Logout with Better Auth */}
+                {/* Logout */}
                 <DropdownMenuItem>
                   <form action="/logout" method="POST" className="w-full">
                     <button
                       type="submit"
-                      className="flex items-center gap-2 w-full rounded-md p-3 text-sm font-medium
-               text-red-600 hover:bg-red-50
-               dark:text-red-400 dark:hover:bg-red-900/20"
+                      className="flex items-center gap-2 w-full rounded-md p-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 cursor-pointer"
                     >
                       <LogOut className="h-4 w-4" />
                       Logout
                     </button>
                   </form>
-
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -211,14 +184,14 @@ export async function Navbar() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="font-medium text-gray-700 hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-400"
+                className="font-medium text-gray-700 hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-400 cursor-pointer"
               >
                 <Link href="/login">Sign In</Link>
               </Button>
               <Button
                 size="sm"
                 asChild
-                className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-medium shadow-md shadow-emerald-500/30"
+                className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-medium shadow-md shadow-emerald-500/30 cursor-pointer"
               >
                 <Link href="/register">Get Started</Link>
               </Button>
@@ -264,7 +237,7 @@ export async function Navbar() {
                         <p className="font-semibold text-sm">{user.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300 px-2 py-0.5 rounded-full">
-                            {user.role?.toUpperCase()}
+                            {user.role.toUpperCase()}
                           </span>
                           <Link
                             href={dashboardPath}
@@ -300,12 +273,12 @@ export async function Navbar() {
                     asChild
                   >
                     <Link href="/shop" className="gap-2">
-                      <ShoppingCart className="h-4 w-4" />
+                      <CartButton />
                       Shop Medicines
                     </Link>
                   </Button>
 
-                  {isLoggedIn ? (
+                  {isLoggedIn && user ? (
                     <>
                       <Button
                         variant="outline"
@@ -321,15 +294,12 @@ export async function Navbar() {
                       <form action="/logout" method="POST" className="w-full">
                         <button
                           type="submit"
-                          className="flex items-center gap-2 w-full rounded-md p-3 text-sm font-medium
-               text-red-600 hover:bg-red-50
-               dark:text-red-400 dark:hover:bg-red-900/20"
+                          className="flex items-center gap-2 w-full rounded-md p-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 cursor-pointer"
                         >
                           <LogOut className="h-4 w-4" />
                           Logout
                         </button>
                       </form>
-
                     </>
                   ) : (
                     <>
