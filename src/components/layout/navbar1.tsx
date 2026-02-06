@@ -25,13 +25,6 @@ import { userService } from "@/services/user.service";
 import { getAuthenticatedPath, getDashboardTitle } from "@/lib/role-utils";
 import { CartButton } from "./cart-button";
 
-interface UserSession {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
 
 export async function Navbar() {
   const { data } = await userService.getSession();
@@ -66,7 +59,6 @@ export async function Navbar() {
           </Link>
         </div>
 
-        {/* Desktop Navigation - Center */}
         <nav className="hidden lg:flex items-center justify-center flex-1">
           <NavigationMenu>
             <NavigationMenuList className="flex items-center justify-center gap-1">
@@ -89,10 +81,7 @@ export async function Navbar() {
 
         {/* Right Actions - Right */}
         <div className="flex items-center justify-end flex-1 gap-3">
-          {/* Cart Button */}
           <CartButton />
-
-          {/* Shop Medicines Button */}
           <Button
             size="sm"
             className="hidden md:inline-flex h-9 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-medium shadow-md shadow-emerald-500/30"

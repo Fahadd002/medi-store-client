@@ -61,13 +61,18 @@ interface Medicine {
   reviewsCount?: number;
   createdAt: string;
   updatedAt: string;
+  sellerId: string;
+  seller?: {
+    id: string;
+    name: string;
+  };
 }
 
 type SortOption = "name" | "createdAt" | "basePrice" | "basePrice_desc";
 
 export default function ShopMedicinesPage() {
   const router = useRouter();
-  const { cart: cartItems, addToCart, removeFromCart, updateQuantity, getCartItemCount, getTotalPrice } = useCart();
+  const { cart: cartItems, addToCart, removeFromCart, updateQuantity, getTotalPrice } = useCart();
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -157,13 +162,12 @@ export default function ShopMedicinesPage() {
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            className={`h-3 w-3 ${
-              i < Math.floor(rating)
-                ? "text-yellow-500 fill-yellow-500"
-                : i < rating
+            className={`h-3 w-3 ${i < Math.floor(rating)
+              ? "text-yellow-500 fill-yellow-500"
+              : i < rating
                 ? "text-yellow-500 fill-yellow-500/50"
                 : "text-gray-300"
-            }`}
+              }`}
           />
         ))}
         <span className="ml-1 text-xs text-gray-500">({rating.toFixed(1)})</span>
@@ -177,9 +181,10 @@ export default function ShopMedicinesPage() {
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
-      toast.error("Your cart is empty");
+      toast.error("Your cart is empty. Add items to proceed to checkout.");
       return;
     }
+
     router.push("/checkout");
   };
 
@@ -206,7 +211,7 @@ export default function ShopMedicinesPage() {
                 Quality medicines from trusted brands. Fast delivery and expert guidance.
               </p>
             </div>
-            
+
             {/* Quick Stats */}
             <div className="flex items-center gap-3">
               <div className="hidden md:flex items-center gap-2 bg-emerald-500/20 px-3 py-1.5 rounded-lg">
@@ -358,7 +363,7 @@ export default function ShopMedicinesPage() {
                     {cartItems.map((item) => {
                       const itemPrice = calculateDiscountedPrice(item.basePrice, item.discountPercent);
                       const totalPrice = itemPrice * item.quantity;
-                      
+
                       return (
                         <div key={item.id} className="border border-emerald-200 rounded-md p-2.5">
                           <div className="flex items-start justify-between mb-1.5">
@@ -502,14 +507,14 @@ export default function ShopMedicinesPage() {
                               <Package className="h-12 w-12 text-emerald-300" />
                             </div>
                           )}
-                          
+
                           {/* Discount Badge */}
                           {medicine.discountPercent && medicine.discountPercent > 0 && (
                             <Badge className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold cursor-pointer px-1.5 py-0">
                               -{medicine.discountPercent}%
                             </Badge>
                           )}
-                          
+
                           {/* Wishlist Button */}
                           <Button
                             size="icon"
@@ -544,7 +549,7 @@ export default function ShopMedicinesPage() {
                           </div>
 
                           {/* Name and Manufacturer */}
-                          <h3 
+                          <h3
                             className="font-semibold text-gray-900 text-sm mb-1 truncate cursor-pointer hover:text-emerald-600 transition-colors"
                             onClick={() => viewProductDetail(medicine.id)}
                           >
@@ -621,6 +626,8 @@ export default function ShopMedicinesPage() {
                                 photoUrl: medicine.photoUrl,
                                 unit: medicine.unit,
                                 stock: medicine.stock,
+                                sellerId: medicine.sellerId,
+                                sellerName: medicine.seller?.name, 
                               })}
                               disabled={(medicine.stock || 0) <= 0}
                               className="w-full h-8 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-xs font-medium cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"

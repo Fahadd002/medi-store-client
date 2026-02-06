@@ -12,6 +12,8 @@ export interface CartItem {
   unit?: string;
   stock?: number;
   quantity: number;
+  sellerId: string; 
+  sellerName?: string; 
 }
 
 interface CartContextType {
@@ -44,7 +46,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (isInitialized) {
       try {
