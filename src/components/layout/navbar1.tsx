@@ -335,7 +335,6 @@ export async function Navbar() {
 /* ---------- MENU DATA ---------- */
 const menu = [
   { title: "Home", href: "/" },
-  { title: "Categories", href: "/categories" },
   { title: "Blog", href: "/blogs" },
   { title: "Contact", href: "/contact" },
 ];

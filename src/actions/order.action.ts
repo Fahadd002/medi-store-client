@@ -1,12 +1,11 @@
-// actions/order.action.ts
 "use server";
 
-import { 
-  CreateOrderPayload, 
+import { orderService } from "@/services/order.service";
+import type {
+  CreateOrderPayload,
   GetOrdersParams,
   OrderStatus,
-  orderService 
-} from "@/services/order.service";
+} from "@/types/order.types";
 import { updateTag } from "next/cache";
 
 export const getOrders = async (
