@@ -115,3 +115,16 @@ export const getReviewStats = async (medicineId: string) => {
 
   return await reviewService.getReviewStats(medicineId);
 };
+
+export const checkReviewEligibility = async (orderId: string, medicineId: string) => {
+  if (!orderId || !medicineId) {
+    return {
+      data: null,
+      error: { message: "Order ID and Medicine ID are required" }
+    };
+  }
+
+  const res = await reviewService.checkReviewEligibility(orderId, medicineId);
+  
+  return res;
+};

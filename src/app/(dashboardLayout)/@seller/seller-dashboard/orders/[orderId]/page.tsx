@@ -12,7 +12,6 @@ import {
   Clock,
   CheckCircle,
   Truck,
-  Home,
   XCircle,
   Calendar,
   User,
@@ -22,10 +21,15 @@ import {
   ArrowLeft,
   ShoppingBag,
   Star,
-  MessageSquare
+  MessageSquare,
+  Reply,
+  ThumbsUp,
+  Shield
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import SellerReplyDialog from "@/components/modules/review/SellerReplyDialog";
+import { toast } from "sonner";
 
 interface OrderItem {
   id: string;
@@ -90,6 +94,12 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedReview, setSelectedReview] = useState<{
+    id: string;
+    customerName: string;
+    comment: string;
+  } | null>(null);
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
 
   useEffect(() => {
     if (orderId) {
@@ -118,6 +128,22 @@ export default function OrderDetailsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReplyClick = (review: Review, customerName: string) => {
+    setSelectedReview({
+      id: review.id,
+      customerName,
+      comment: review.comment || ""
+    });
+    setReplyDialogOpen(true);
+  };
+
+  const handleReplySuccess = () => {
+    toast.success("Reply submitted successfully!");
+    setReplyDialogOpen(false);
+    // Refresh order data to show the new reply
+    fetchOrder();
   };
 
   const getStatusIcon = (status: string) => {
@@ -192,6 +218,23 @@ export default function OrderDetailsPage() {
     return total / validReviews.length;
   };
 
+  // Check if a customer review has a seller reply
+  const hasSellerReply = (reviews: Review[], customerReviewId: string) => {
+    return reviews.some(review => 
+      review.seller && 
+      review.id !== customerReviewId
+    );
+  };
+
+  // Find unreplied customer reviews
+  const getUnrepliedReviews = (reviews?: Review[]) => {
+    if (!reviews) return [];
+    return reviews.filter(review => 
+      review.customer && 
+      !hasSellerReply(reviews, review.id)
+    );
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-emerald-50/30 to-white py-8">
@@ -218,7 +261,7 @@ export default function OrderDetailsPage() {
             <div className="flex gap-3 justify-center">
               <Button 
                 variant="outline" 
-                onClick={() => router.push("/orders")}
+                onClick={() => router.push("/seller-dashboard/orders")}
                 className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -244,7 +287,7 @@ export default function OrderDetailsPage() {
             <h3 className="text-lg font-semibold text-emerald-800 mb-2">Order Not Found</h3>
             <p className="text-emerald-600 mb-4">The order you are looking for does not exist.</p>
             <Button 
-              onClick={() => router.push("/orders")}
+              onClick={() => router.push("/seller-dashboard/orders")}
               className="bg-emerald-600 hover:bg-emerald-700"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -264,7 +307,7 @@ export default function OrderDetailsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                 <Link href={`/seller-dashboard/orders`}>
+                <Link href={`/seller-dashboard/orders`}>
                   <Button variant="ghost" size="sm" className="text-emerald-700 hover:bg-emerald-50">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Orders
@@ -274,7 +317,6 @@ export default function OrderDetailsPage() {
               </div>
               <p className="text-emerald-600">Order #{order.orderNumber}</p>
             </div>
-           
           </div>
         </div>
 
@@ -334,6 +376,8 @@ export default function OrderDetailsPage() {
               <div className="space-y-4">
                 {order.items.map((item) => {
                   const avgRating = getAverageRating(item.medicine?.reviews);
+                  const unrepliedReviews = getUnrepliedReviews(item.medicine?.reviews);
+                  
                   return (
                     <div key={item.id} className="border border-emerald-100 rounded-lg p-4">
                       <div className="flex gap-4">
@@ -372,54 +416,133 @@ export default function OrderDetailsPage() {
                           {/* Reviews Section */}
                           {item.medicine?.reviews && item.medicine.reviews.length > 0 && (
                             <div className="mt-3 pt-3 border-t border-emerald-100">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                                <span className="font-medium text-sm">{avgRating.toFixed(1)}</span>
-                                <span className="text-sm text-gray-500">({item.medicine.reviews.length} reviews)</span>
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                                  <span className="font-medium text-sm">{avgRating.toFixed(1)}</span>
+                                  <span className="text-sm text-gray-500">
+                                    ({item.medicine.reviews.length} review{item.medicine.reviews.length !== 1 ? 's' : ''})
+                                  </span>
+                                </div>
+                                {unrepliedReviews.length > 0 && (
+                                  <Badge variant="outline" className="border-amber-300 text-amber-700 bg-amber-50">
+                                    {unrepliedReviews.length} to reply
+                                  </Badge>
+                                )}
                               </div>
                               
                               <div className="space-y-3">
-                                {item.medicine.reviews.slice(0, 2).map((review) => (
-                                  <div key={review.id} className="bg-emerald-50/50 rounded p-3">
-                                    <div className="flex items-center justify-between mb-2">
-                                      <div className="flex items-center gap-2">
-                                        {review.customer ? (
-                                          <>
-                                            <User className="h-4 w-4 text-emerald-600" />
-                                            <span className="font-medium text-sm">{review.customer.name}</span>
-                                          </>
-                                        ) : review.seller ? (
-                                          <>
-                                            <User className="h-4 w-4 text-blue-600" />
-                                            <span className="font-medium text-sm">{review.seller.name} (Seller)</span>
-                                          </>
-                                        ) : null}
+                                {item.medicine.reviews.slice(0, 2).map((review) => {
+                                  const isCustomerReview = !!review.customer;
+                                  const isSellerReply = !!review.seller;
+                                  const hasReply = hasSellerReply(item.medicine?.reviews || [], review.id);
+                                  
+                                  return (
+                                    <div 
+                                      key={review.id} 
+                                      className={`rounded p-3 ${
+                                        isSellerReply 
+                                          ? 'ml-6 bg-blue-50/50 border-l-4 border-blue-200' 
+                                          : 'bg-emerald-50/50'
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                          {isCustomerReview ? (
+                                            <>
+                                              <User className="h-4 w-4 text-emerald-600" />
+                                              <span className="font-medium text-sm">{review.customer?.name}</span>
+                                              <Badge variant="outline" className="h-5 text-xs border-emerald-200 text-emerald-700">
+                                                Customer
+                                              </Badge>
+                                            </>
+                                          ) : isSellerReply ? (
+                                            <>
+                                              <Shield className="h-4 w-4 text-blue-600" />
+                                              <span className="font-medium text-sm">{review.seller?.name}</span>
+                                              <Badge variant="outline" className="h-5 text-xs border-blue-200 text-blue-700">
+                                                Seller
+                                              </Badge>
+                                            </>
+                                          ) : null}
+                                        </div>
+                                        {review.rating !== null && isCustomerReview && (
+                                          <div className="flex items-center gap-1">
+                                            <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                                            <span className="text-sm font-medium">{review.rating}</span>
+                                          </div>
+                                        )}
                                       </div>
-                                      {review.rating !== null && (
-                                        <div className="flex items-center gap-1">
-                                          <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                                          <span className="text-sm font-medium">{review.rating}</span>
+                                      
+                                      {review.comment && (
+                                        <div className="mb-2">
+                                          <p className="text-sm text-gray-700">{review.comment}</p>
                                         </div>
                                       )}
+                                      
+                                      <div className="flex items-center justify-between">
+                                        <p className="text-xs text-gray-500">
+                                          {formatDate(review.createdAt)}
+                                        </p>
+                                        
+                                        {isCustomerReview && !hasReply && (
+                                          <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => handleReplyClick(review, review.customer?.name || "Customer")}
+                                            className="h-7 text-xs text-emerald-700 hover:bg-emerald-100"
+                                          >
+                                            <Reply className="h-3 w-3 mr-1" />
+                                            Reply
+                                          </Button>
+                                        )}
+                                        
+                                        {isSellerReply && (
+                                          <Badge variant="outline" className="h-5 text-xs border-blue-200 text-blue-700">
+                                            <ThumbsUp className="h-3 w-3 mr-1" />
+                                            Replied
+                                          </Badge>
+                                        )}
+                                      </div>
                                     </div>
-                                    {review.comment && (
-                                      <p className="text-sm text-gray-700">{review.comment}</p>
-                                    )}
-                                    <p className="text-xs text-gray-500 mt-2">
-                                      {formatDate(review.createdAt)}
-                                    </p>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                                 
+                                {/* View More Reviews Button */}
                                 {item.medicine.reviews.length > 2 && (
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="text-emerald-700 hover:bg-emerald-50 w-full"
-                                  >
-                                    <MessageSquare className="h-4 w-4 mr-2" />
-                                    View all {item.medicine.reviews.length} reviews
-                                  </Button>
+                                  <div className="flex justify-center">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="text-emerald-700 hover:bg-emerald-50"
+                                    >
+                                      <MessageSquare className="h-4 w-4 mr-2" />
+                                      View all {item.medicine.reviews.length} reviews
+                                    </Button>
+                                  </div>
+                                )}
+                                
+                                {/* Reply to All Button if there are unreplied reviews */}
+                                {unrepliedReviews.length > 0 && (
+                                  <div className="pt-2 border-t border-emerald-100">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => {
+                                        const firstUnreplied = unrepliedReviews[0];
+                                        if (firstUnreplied) {
+                                          handleReplyClick(
+                                            firstUnreplied, 
+                                            firstUnreplied.customer?.name || "Customer"
+                                          );
+                                        }
+                                      }}
+                                      className="w-full border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                                    >
+                                      <Reply className="h-4 w-4 mr-2" />
+                                      Reply to Review{unrepliedReviews.length > 1 ? ` (${unrepliedReviews.length} pending)` : ''}
+                                    </Button>
+                                  </div>
                                 )}
                               </div>
                             </div>
@@ -517,7 +640,8 @@ export default function OrderDetailsPage() {
                 </div>
               </div>
             </Card>
-            {/* Actions */}
+
+            {/* Order Actions */}
             <Card className="border-emerald-200 p-6">
               <h3 className="text-lg font-semibold text-emerald-900 mb-4">Order Actions</h3>
               <div className="space-y-3">
@@ -540,6 +664,16 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Seller Reply Dialog */}
+      <SellerReplyDialog
+        open={replyDialogOpen}
+        onOpenChange={setReplyDialogOpen}
+        reviewId={selectedReview?.id || ''}
+        customerName={selectedReview?.customerName || ''}
+        customerComment={selectedReview?.comment || ''}
+        onSuccess={handleReplySuccess}
+      />
     </div>
   );
 }
