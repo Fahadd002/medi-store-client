@@ -1,4 +1,3 @@
-// app/shop/page.tsx
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -176,7 +175,7 @@ export default function ShopMedicinesPage() {
   };
 
   const viewProductDetail = (medicineId: string) => {
-    router.push(`/medicines/${medicineId}`);
+    router.push(`/shop/${medicineId}`);
   };
 
   const handleCheckout = () => {
@@ -198,7 +197,6 @@ export default function ShopMedicinesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50/30 to-white">
-      {/* Compact Hero Section */}
       <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -278,15 +276,12 @@ export default function ShopMedicinesPage() {
 
       <div className="container mx-auto px-4 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left Sidebar - Filters */}
           <div className="lg:col-span-1 space-y-4">
             <Card className="border-emerald-200 p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-emerald-900">Filters</h3>
                 <Filter className="h-4 w-4 text-emerald-600" />
               </div>
-
-              {/* Search */}
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-emerald-700 mb-1.5">
@@ -303,7 +298,6 @@ export default function ShopMedicinesPage() {
                   </div>
                 </div>
 
-                {/* Category Filter */}
                 <div>
                   <label className="block text-xs font-medium text-emerald-700 mb-1.5">
                     Category
@@ -316,8 +310,6 @@ export default function ShopMedicinesPage() {
                     className="border-emerald-300 focus:ring-emerald-500 focus:border-emerald-500 h-9 text-sm cursor-pointer"
                   />
                 </div>
-
-                {/* Sort By */}
                 <div>
                   <label className="block text-xs font-medium text-emerald-700 mb-1.5">
                     Sort By
@@ -436,9 +428,7 @@ export default function ShopMedicinesPage() {
             </Card>
           </div>
 
-          {/* Main Content - Products */}
           <div className="lg:col-span-3">
-            {/* Results Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h2 className="text-xl font-bold text-emerald-900">Medicines</h2>
@@ -460,7 +450,6 @@ export default function ShopMedicinesPage() {
               </div>
             </div>
 
-            {/* Products Grid */}
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: parseInt(limit) }, (_, i) => (
@@ -493,7 +482,7 @@ export default function ShopMedicinesPage() {
 
                     return (
                       <Card key={medicine.id} className="group border-emerald-200 hover:border-emerald-400 hover:shadow-md transition-all duration-200 overflow-hidden">
-                        {/* Product Image */}
+
                         <div className="relative h-40 bg-emerald-50 overflow-hidden">
                           {medicine.photoUrl ? (
                             <img
@@ -547,8 +536,6 @@ export default function ShopMedicinesPage() {
                               {medicine.category.name}
                             </Badge>
                           </div>
-
-                          {/* Name and Manufacturer */}
                           <h3
                             className="font-semibold text-gray-900 text-sm mb-1 truncate cursor-pointer hover:text-emerald-600 transition-colors"
                             onClick={() => viewProductDetail(medicine.id)}
@@ -582,7 +569,6 @@ export default function ShopMedicinesPage() {
                             <span className="text-[10px] text-gray-500">per {medicine.unit || 'unit'}</span>
                           </div>
 
-                          {/* Add to Cart / Quantity Controls */}
                           {cartQuantity > 0 ? (
                             <div className="flex items-center justify-between gap-1.5">
                               <div className="flex items-center gap-1.5">
@@ -651,8 +637,6 @@ export default function ShopMedicinesPage() {
                     );
                   })}
                 </div>
-
-                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6 pt-4 border-t border-emerald-200">
                     <div className="text-xs text-emerald-700">
