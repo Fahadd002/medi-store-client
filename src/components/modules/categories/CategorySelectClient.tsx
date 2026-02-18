@@ -11,10 +11,22 @@ import {
 import { toast } from "sonner";
 import { categoryClientService } from "@/services/client-rendering/category.client";
 
-interface Item {
+interface CategoryItem {
   value: string;
   label: string;
 }
+
+// Define the expected response type from the API
+interface CategoryDropdownResponse {
+  data?: Array<{
+    id: string;
+    name: string;
+    value?: string;
+    label?: string;
+  }>;
+}
+
+type ApiResponse = CategoryDropdownResponse | Array<{ id: string; name: string; value?: string; label?: string; }>;
 
 interface Props {
   value?: string;
@@ -31,7 +43,7 @@ export default function CategorySelectClient({
   disabled = false,
   className,
 }: Props) {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<CategoryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,10 +52,27 @@ export default function CategorySelectClient({
       try {
         const { data, error } = await categoryClientService.getCategoryDropdown();
         if (error) throw new Error(error.message || "Failed to load categories");
-        const list = (data?.data ?? data ?? []).map((c: any) => ({
-          value: String(c.value ?? c.id ?? ""),
-          label: String(c.label ?? c.name ?? ""),
-        })).filter((i: Item) => i.value !== "");
+        
+        // Handle both response formats
+        let categoryList: Array<{ id: string; name: string; value?: string; label?: string; }> = [];
+        
+        if (Array.isArray(data)) {
+          // If data is directly an array
+          categoryList = data;
+        } else if (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
+
+          categoryList = data.data;
+        } else {
+          categoryList = [];
+        }
+        
+        const list = categoryList
+          .map((c) => ({
+            value: String(c.value ?? c.id ?? ""),
+            label: String(c.label ?? c.name ?? ""),
+          }))
+          .filter((i: CategoryItem) => i.value !== "");
+          
         if (mounted) setItems(list);
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -57,22 +86,23 @@ export default function CategorySelectClient({
   }, []);
 
   return (
-    <Select
-      value={value ?? ""}
-      onValueChange={(v) => onValueChange?.(String(v))}
-      disabled={disabled || loading}
-      className={className}
-    >
-      <SelectTrigger className="border-green-300 focus:ring-green-500 focus:border-green-500 h-9 text-sm w-full">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {items.map((it) => (
-          <SelectItem key={it.value} value={it.value}>
-            {it.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className={className}>
+      <Select
+        value={value ?? ""}
+        onValueChange={(v) => onValueChange?.(String(v))}
+        disabled={disabled || loading}
+      >
+        <SelectTrigger className="border-green-300 focus:ring-green-500 focus:border-green-500 h-9 text-sm w-full">
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {items.map((it) => (
+            <SelectItem key={it.value} value={it.value}>
+              {it.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
