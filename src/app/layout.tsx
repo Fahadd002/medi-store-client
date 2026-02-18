@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -22,12 +24,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
       <body>
         <ThemeProvider
           attribute="class"
@@ -36,7 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-           <Toaster richColors />
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>
