@@ -23,24 +23,26 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false)
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const data = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "https://medi-store-client-swart.vercel.app"
-      })
-      console.log(data)
+        callbackURL: "https://medi-store-client-swart.vercel.app",
+      });
+
+      console.log("Google login data:", data);
     } catch (error) {
-      console.error("Google login failed:", error)
+      console.error("Google login failed:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
-    
+
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const password = formData.get("password") as string
@@ -121,8 +123,8 @@ export function LoginForm({
 
             {/* Actions */}
             <div className="space-y-3">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
                 disabled={isLoading}
               >
