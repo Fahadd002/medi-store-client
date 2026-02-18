@@ -18,7 +18,7 @@ export default function VerifyEmailPage() {
             }
 
             try {
-                const response = await fetch("http://localhost:5000/api/verify-email", {
+                const response = await fetch("https://medi-store-api.vercel.app/api/verify-email", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ token }),

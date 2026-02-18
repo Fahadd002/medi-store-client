@@ -44,6 +44,7 @@ export function LoginForm({
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const password = formData.get("password") as string
+    console.log("Attempting login with:", { email, password })
 
     try {
       const data = await authClient.signIn.email({

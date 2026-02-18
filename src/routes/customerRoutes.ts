@@ -28,22 +28,12 @@ export const customerRoutes: Route[] = [
                 title: "My Orders",
                 url: "/orders",
                 icon: "ShoppingBag"
-            },
-            {
-                title: "Order Details",
-                url: "/orders/:id",
-                icon: "FileText"
             }
         ],
     },
     {
         title: "Shopping",
         items: [
-            {
-                title: "Cart",
-                url: "/cart",
-                icon: "ShoppingCart"
-            },
             {
                 title: "Checkout",
                 url: "/checkout",

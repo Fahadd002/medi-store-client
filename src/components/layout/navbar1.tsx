@@ -24,6 +24,7 @@ import { ModeToggle } from "./ModeToggle";
 import { userService } from "@/services/user.service";
 import { getAuthenticatedPath, getDashboardTitle } from "@/lib/role-utils";
 import { CartButton } from "./cart-button";
+import Image from "next/image";
 
 
 export async function Navbar() {
@@ -101,17 +102,43 @@ export async function Navbar() {
                   variant="ghost"
                   className="relative h-10 w-10 rounded-full p-0 border border-emerald-200 dark:border-emerald-800 ring-offset-background hover:ring-2 hover:ring-emerald-500/20 transition-all"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-xs font-bold uppercase">
-                    {getUserInitials()}
-                  </div>
+                  {/* Profile Image or Initials */}
+                  {user.image ? (
+                    <div className="relative h-8 w-8 rounded-full overflow-hidden">
+                      <Image
+                        src={user.image}
+                        alt={user.name}
+                        fill
+                        className="object-cover"
+                        unoptimized={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-xs font-bold uppercase">
+                      {getUserInitials()}
+                    </div>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64 mt-2 p-2 border-emerald-100 dark:border-emerald-800">
                 {/* User Info */}
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/50">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-sm font-bold">
-                    {getUserInitials()}
-                  </div>
+                  {/* Profile Image or Initials in dropdown */}
+                  {user.image ? (
+                    <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                      <Image
+                        src={user.image}
+                        alt={user.name}
+                        fill
+                        className="object-cover"
+                        unoptimized={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-sm font-bold">
+                      {getUserInitials()}
+                    </div>
+                  )}
                   <div className="flex flex-col space-y-0.5">
                     <p className="text-sm font-semibold leading-none text-gray-900 dark:text-white">
                       {user.name}
@@ -219,9 +246,22 @@ export async function Navbar() {
                 {isLoggedIn && user && (
                   <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-900/10">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-sm font-bold">
-                        {getUserInitials()}
-                      </div>
+                      {/* Profile Image or Initials in mobile */}
+                      {user.image ? (
+                        <div className="relative h-10 w-10 rounded-full overflow-hidden">
+                          <Image
+                            src={user.image}
+                            alt={user.name}
+                            fill
+                            className="object-cover"
+                            unoptimized={true}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-sm font-bold">
+                          {getUserInitials()}
+                        </div>
+                      )}
                       <div>
                         <p className="font-semibold text-sm">{user.name}</p>
                         <div className="flex items-center gap-2 mt-1">

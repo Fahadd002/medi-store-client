@@ -456,7 +456,7 @@ export default function OrderDetailsPage() {
                             </div>
                             <div className="text-right">
                               <div className="font-bold text-emerald-900">{formatPrice(item.price * item.quantity)}</div>
-                              <Link href={`/medicine/${item.medicineId}`} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                              <Link href={`/shop/${item.medicineId}`} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
                                 View Product →
                               </Link>
                             </div>

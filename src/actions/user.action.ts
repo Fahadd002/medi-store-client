@@ -2,6 +2,7 @@
 
 import { userService } from "@/services/user.service";
 import { UserRole, UserStatus } from "@/types/user.types";
+import { revalidatePath } from "next/cache";
 
 export async function getAllUsers(params?: {
     search?: string;
@@ -18,15 +19,21 @@ export async function getUserStats() {
 }
 
 export async function updateUserStatus(userId: string, status: UserStatus) {
-    return await userService.updateUserStatus(userId, status);
+    const result = await userService.updateUserStatus(userId, status);
+    revalidatePath("/admin/users");
+    return result;
 }
 
 export async function updateUserRole(userId: string, role: UserRole) {
-    return await userService.updateUserRole(userId, role);
+    const result = await userService.updateUserRole(userId, role);
+    revalidatePath("/admin/users");
+    return result;
 }
 
 export async function deleteUser(userId: string) {
-    return await userService.deleteUser(userId);
+    const result = await userService.deleteUser(userId);
+    revalidatePath("/admin/users");
+    return result;
 }
 
 export async function searchAllUsers(query: string) {
@@ -50,9 +57,23 @@ export async function getUserById(userId: string) {
 }
 
 export async function updateUser(userId: string, data: { name?: string; phone?: string; address?: string; image?: string }) {
-    return await userService.updateUser(userId, data);
+    const result = await userService.updateUser(userId, data);
+    revalidatePath("/profile");
+    return result;
 }
 
 export async function getCurrentUser() {
     return await userService.getSession();
+}
+
+export async function updateUserProfile(userId: string, data: {
+    name?: string;
+    phone?: string;
+    image?: string;
+    currentPassword?: string;
+    newPassword?: string;
+}) {
+    const result = await userService.updateUserWithPassword(userId, data);
+    revalidatePath("/profile");
+    return result;
 }

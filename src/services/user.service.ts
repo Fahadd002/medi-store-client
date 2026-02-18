@@ -7,7 +7,7 @@ const AUTH_URL = env.AUTH_URL;
 const API_URL = env.API_URL;
 
 export const userService = {
-     getSession: async function () {
+    getSession: async function () {
         try {
             const cookieStore = await cookies();
             const res = await fetch(`${AUTH_URL}/get-session`, {
@@ -18,14 +18,15 @@ export const userService = {
             });
 
             const session = await res.json();
-            if(session == null){
-                return {data: null, error:{message: "Something Went Wrong"}}
+            console.log("Session Data:", session);
+            if (session == null) {
+                return { data: null, error: { message: "Something Went Wrong" } }
             }
-            return {data: session, error:null}
+            return { data: session, error: null }
         }
         catch (err) {
             console.error(err)
-            return {data: null, error: {message: "Something went Wrong"}}
+            return { data: null, error: { message: "Something went Wrong" } }
         }
     },
 
@@ -41,31 +42,31 @@ export const userService = {
         try {
             const cookieStore = await cookies();
             const url = new URL(`${API_URL}/users`);
-            
+
             if (params?.search) url.searchParams.append('search', params.search);
             if (params?.role) url.searchParams.append('role', params.role);
             if (params?.status) url.searchParams.append('status', params.status);
             if (params?.page) url.searchParams.append('page', params.page);
             if (params?.limit) url.searchParams.append('limit', params.limit);
-            
+
             const res = await fetch(url.toString(), {
                 headers: { Cookie: cookieStore.toString() },
                 cache: "no-store"
             });
-            
+
             if (!res.ok) throw new Error("Failed to fetch users");
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
+            return {
+                success: false,
                 message: "Failed to fetch users",
-                data: [], 
-                meta: { total: 0, page: 1, limit: 10, totalPage: 1 } 
+                data: [],
+                meta: { total: 0, page: 1, limit: 10, totalPage: 1 }
             };
         }
     },
-    
+
     // Get user statistics
     getUserStats: async function () {
         try {
@@ -74,13 +75,13 @@ export const userService = {
                 headers: { Cookie: cookieStore.toString() },
                 cache: "no-store"
             });
-            
+
             if (!res.ok) throw new Error("Failed to fetch stats");
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
+            return {
+                success: false,
                 message: "Failed to fetch statistics",
                 data: {
                     total: 0, customers: 0, sellers: 0, admins: 0,
@@ -89,7 +90,7 @@ export const userService = {
             };
         }
     },
-    
+
     // Update user status
     updateUserStatus: async function (userId: string, status: UserStatus) {
         try {
@@ -103,17 +104,17 @@ export const userService = {
                 body: JSON.stringify({ status }),
                 cache: "no-store"
             });
-            
+
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
-                message: "Failed to update user status" 
+            return {
+                success: false,
+                message: "Failed to update user status"
             };
         }
     },
-    
+
     // Update user role
     updateUserRole: async function (userId: string, role: UserRole) {
         try {
@@ -127,17 +128,17 @@ export const userService = {
                 body: JSON.stringify({ role }),
                 cache: "no-store"
             });
-            
+
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
-                message: "Failed to update user role" 
+            return {
+                success: false,
+                message: "Failed to update user role"
             };
         }
     },
-    
+
     // Delete user
     deleteUser: async function (userId: string) {
         try {
@@ -147,65 +148,65 @@ export const userService = {
                 headers: { Cookie: cookieStore.toString() },
                 cache: "no-store"
             });
-            
+
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
-                message: "Failed to delete user" 
+            return {
+                success: false,
+                message: "Failed to delete user"
             };
         }
     },
-    
+
     // Search all users for dropdown
     searchAllUsers: async function (query?: string) {
         try {
             const cookieStore = await cookies();
             const url = new URL(`${API_URL}/users/dropdown`);
             if (query) url.searchParams.append('search', query);
-            
+
             const res = await fetch(url.toString(), {
                 headers: { Cookie: cookieStore.toString() },
                 cache: "no-store"
             });
-            
+
             if (!res.ok) throw new Error("Failed to search users");
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
+            return {
+                success: false,
                 message: "Failed to search users",
-                data: [] 
+                data: []
             };
         }
     },
-    
+
     // Search sellers only for dropdown
     searchSellers: async function (query?: string) {
         try {
             const cookieStore = await cookies();
             const url = new URL(`${API_URL}/users/seller-dropdown`);
             if (query) url.searchParams.append('search', query);
-            
+
             const res = await fetch(url.toString(), {
                 headers: { Cookie: cookieStore.toString() },
                 cache: "no-store"
             });
-            
+
             if (!res.ok) throw new Error("Failed to search sellers");
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
+            return {
+                success: false,
                 message: "Failed to search sellers",
-                data: [] 
+                data: []
             };
         }
     },
-    
+
     // Get single user by ID
     getUserById: async function (userId: string) {
         try {
@@ -214,17 +215,17 @@ export const userService = {
                 headers: { Cookie: cookieStore.toString() },
                 cache: "no-store"
             });
-            
+
             const data = await res.json();
             return data;
         } catch {
-            return { 
-                success: false, 
-                message: "Failed to fetch user" 
+            return {
+                success: false,
+                message: "Failed to fetch user"
             };
         }
     },
-    
+
     // Update user profile
     updateUser: async function (userId: string, data: { name?: string; phone?: string; address?: string; image?: string }) {
         try {
@@ -238,13 +239,42 @@ export const userService = {
                 body: JSON.stringify(data),
                 cache: "no-store"
             });
-            
+
             const result = await res.json();
             return result;
         } catch {
-            return { 
-                success: false, 
-                message: "Failed to update user" 
+            return {
+                success: false,
+                message: "Failed to update user"
+            };
+        }
+    },
+
+    updateUserWithPassword: async function (userId: string, data: {
+        name?: string;
+        phone?: string;
+        image?: string;
+        currentPassword?: string;
+        newPassword?: string;
+    }) {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/users/${userId}/profile`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Cookie: cookieStore.toString(),
+                },
+                body: JSON.stringify(data),
+                cache: "no-store"
+            });
+
+            const result = await res.json();
+            return result;
+        } catch {
+            return {
+                success: false,
+                message: "Failed to update profile"
             };
         }
     }
