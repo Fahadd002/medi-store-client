@@ -61,7 +61,7 @@ export function RegisterForm(props: React.ComponentProps<typeof Card>) {
       toast.loading("Connecting to Google...")
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "http://localhost:3000/api/auth/callback/google",
+        callbackURL: "https://medi-store-client-swart.vercel.app",
       })
       
       // Get user session to determine role
