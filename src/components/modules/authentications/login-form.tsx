@@ -27,7 +27,7 @@ export function LoginForm({
     try {
       const data = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "https://medi-store-client-swart.vercel.app",
+        callbackURL: "https://medi-store-client-main.vercel.app",
       });
 
       console.log("Google login data:", data);
@@ -52,7 +52,7 @@ export function LoginForm({
       const data = await authClient.signIn.email({
         email,
         password,
-        callbackURL: "https://medi-store-client-swart.vercel.app"
+        callbackURL: "https://medi-store-client-main.vercel.app"
       })
       console.log("Login successful:", data)
     } catch (error) {
