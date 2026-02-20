@@ -23,6 +23,7 @@ export interface GetMedicinesParams {
   skip?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  isActive?: boolean;
 }
 
 export interface ServiceOptions {

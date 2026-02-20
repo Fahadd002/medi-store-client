@@ -13,6 +13,7 @@ export const getMedicines = async (
     skip?: string;
     sortBy?: string;
     sortOrder?: "asc" | "desc";
+    isActive?: boolean;
   },
   options?: {
     cache?: RequestCache;

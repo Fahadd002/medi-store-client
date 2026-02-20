@@ -476,7 +476,7 @@ const SellerOrder = () => {
                         </TableCell>
                         <TableCell>
                           <div className="font-bold text-emerald-700 text-sm">
-                            ${order.totalAmount.toFixed(2)}
+                            ৳{order.totalAmount.toFixed(2)}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -547,12 +547,12 @@ const SellerOrder = () => {
                                           {item.medicine?.name || 'Unknown Medicine'}
                                         </h5>
                                         <p className="text-xs text-gray-500 mt-0.5">
-                                          Qty: {item.quantity} × ${item.price.toFixed(2)}
+                                          Qty: {item.quantity} × ৳{item.price.toFixed(2)}
                                         </p>
                                       </div>
                                       <div className="text-right">
                                         <div className="font-bold text-emerald-700 text-sm">
-                                          ${(item.price * item.quantity).toFixed(2)}
+                                          ৳{(item.price * item.quantity).toFixed(2)}
                                         </div>
                                         <div className="text-xs text-gray-400 mt-0.5">
                                           SKU: {item.medicineId?.slice(0, 8)}...

@@ -105,6 +105,7 @@ export default function ShopMedicinesPage() {
         skip: skip.toString(),
         sortBy: actualSortBy,
         sortOrder,
+        isActive: true,
       });
 
       if (error) throw new Error(error.message);
@@ -238,7 +239,7 @@ export default function ShopMedicinesPage() {
             </div>
             <div>
               <p className="text-xs font-semibold text-gray-900">Free Delivery</p>
-              <p className="text-[10px] text-gray-500">Over $100</p>
+              <p className="text-[10px] text-gray-500">Over ৳1000</p>
             </div>
           </div>
 

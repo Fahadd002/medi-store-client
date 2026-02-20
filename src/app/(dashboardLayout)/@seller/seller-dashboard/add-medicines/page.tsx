@@ -197,13 +197,34 @@ export default function MedicinesPage() {
     form.setFieldValue("description", medicine.description);
     form.setFieldValue("basePrice", medicine.basePrice.toString());
     form.setFieldValue("manufacturer", medicine.manufacturer);
-    form.setFieldValue("expiryDate", new Date(medicine.expiryDate || "").toISOString().split("T")[0]);
+    
+    // Fix: Safely handle expiry date
+    if (medicine.expiryDate) {
+      try {
+        const date = new Date(medicine.expiryDate);
+        // Check if date is valid
+        if (!isNaN(date.getTime())) {
+          form.setFieldValue("expiryDate", date.toISOString().split("T")[0]);
+        } else {
+          form.setFieldValue("expiryDate", "");
+        }
+      } catch {
+        form.setFieldValue("expiryDate", "");
+      }
+    } else {
+      form.setFieldValue("expiryDate", "");
+    }
+    
     form.setFieldValue("categoryId", medicine.categoryId);
     form.setFieldValue("unit", medicine.unit || "pcs");
-    form.setFieldValue("photoUrl", medicine.photoUrl || "");
-
+    
+    // Fix: Set photoUrl in the form field
     if (medicine.photoUrl) {
+      form.setFieldValue("photoUrl", medicine.photoUrl);
       setImagePreview(medicine.photoUrl);
+    } else {
+      form.setFieldValue("photoUrl", "");
+      setImagePreview("");
     }
 
     setIsEditing(true);
@@ -288,8 +309,13 @@ export default function MedicinesPage() {
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Invalid date";
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch {
+      return "Invalid date";
+    }
   };
 
   const getStatusBadge = (isActive: boolean) => {
@@ -405,7 +431,7 @@ export default function MedicinesPage() {
                         return (
                           <Field>
                             <FieldLabel htmlFor={field.name} className="text-sm font-medium text-green-700">
-                              Price ($) *
+                              Price (৳) *
                             </FieldLabel>
                             <Input
                               type="number"
@@ -712,7 +738,7 @@ export default function MedicinesPage() {
                     </TableCell>
                     <TableCell className="px-4 py-3">
                       <span className="text-sm font-medium text-green-800 hover:cursor-text">
-                        ${medicine.basePrice.toFixed(2)}
+                        ৳{medicine.basePrice.toFixed(2)}
                       </span>
                     </TableCell>
                     <TableCell className="px-4 py-3">

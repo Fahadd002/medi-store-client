@@ -349,12 +349,12 @@ const MedicineDetails = () => {
                 <div>
                   <div className="flex items-baseline space-x-2">
                     <span className="text-4xl font-bold text-gray-900">
-                      ${discountedPrice.toFixed(2)}
+                       ৳{discountedPrice.toFixed(2)}
                     </span>
                     {(medicine.discountPercent || 0) > 0 && (
                       <>
                         <span className="text-xl text-gray-500 line-through">
-                          ${(medicine.basePrice || 0).toFixed(2)}
+                           ৳{(medicine.basePrice || 0).toFixed(2)}
                         </span>
                         <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium">
                           {medicine.discountPercent}% OFF

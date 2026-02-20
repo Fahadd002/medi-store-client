@@ -394,7 +394,7 @@ export default function AdminMedicinesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-violet-700">Total Value</p>
-              <p className="text-2xl font-bold text-violet-900 mt-1">${stats.totalValue.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-violet-900 mt-1"> ৳{stats.totalValue.toFixed(2)}</p>
             </div>
             <div className="p-3 bg-violet-100 rounded-xl">
               <DollarSign className="h-5 w-5 text-violet-600" />
@@ -597,15 +597,15 @@ export default function AdminMedicinesPage() {
                         {medicine.discountPercent ? (
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-emerald-900">
-                              ${calculateDiscountedPrice(medicine.basePrice, medicine.discountPercent).toFixed(2)}
+                              ৳{calculateDiscountedPrice(medicine.basePrice, medicine.discountPercent).toFixed(2)}
                             </span>
                             <span className="text-sm text-gray-400 line-through">
-                              ${medicine.basePrice.toFixed(2)}
+                              ৳{medicine.basePrice.toFixed(2)}
                             </span>
                           </div>
                         ) : (
                           <span className="font-semibold text-emerald-900">
-                            ${medicine.basePrice.toFixed(2)}
+                            ৳{medicine.basePrice.toFixed(2)}
                           </span>
                         )}
                         <p className="text-xs text-emerald-600 mt-1">per {medicine.unit || 'unit'}</p>
@@ -799,7 +799,7 @@ export default function AdminMedicinesPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-emerald-700">Base Price:</span>
-                      <span className="font-medium">${selectedMedicine.basePrice.toFixed(2)}</span>
+                      <span className="font-medium">৳{selectedMedicine.basePrice.toFixed(2)}</span>
                     </div>
                     {selectedMedicine.discountPercent && (
                       <div className="flex justify-between">
@@ -810,7 +810,7 @@ export default function AdminMedicinesPage() {
                     <div className="flex justify-between pt-2 border-t border-emerald-100">
                       <span className="font-semibold text-emerald-800">Final Price:</span>
                       <span className="font-bold text-emerald-900">
-                        ${calculateDiscountedPrice(selectedMedicine.basePrice, selectedMedicine.discountPercent).toFixed(2)}
+                        ৳{calculateDiscountedPrice(selectedMedicine.basePrice, selectedMedicine.discountPercent).toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between">

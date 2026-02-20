@@ -320,7 +320,7 @@ export default function MedicinesInventoryPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-violet-700">Total Value</p>
-              <p className="text-lg font-semibold text-violet-600">${stats.totalValue.toFixed(2)}</p>
+              <p className="text-lg font-semibold text-violet-600"> ৳{stats.totalValue.toFixed(2)}</p>
             </div>
             <div className="p-2 bg-violet-100 rounded-lg">
               <DollarSign className="h-4 w-4 text-violet-600" />
@@ -463,16 +463,16 @@ export default function MedicinesInventoryPage() {
                           <>
                             <div className="flex items-center gap-1">
                               <span className="text-sm font-semibold text-emerald-900 cursor-text">
-                                ${calculateDiscountedPrice(medicine.basePrice, medicine.discountPercent).toFixed(2)}
+                                 ৳{calculateDiscountedPrice(medicine.basePrice, medicine.discountPercent).toFixed(2)}
                               </span>
                               <span className="text-xs text-gray-400 line-through cursor-text">
-                                ${medicine.basePrice.toFixed(2)}
+                                ৳{medicine.basePrice.toFixed(2)}
                               </span>
                             </div>
                           </>
                         ) : (
                           <span className="text-sm font-semibold text-emerald-900 cursor-text">
-                            ${medicine.basePrice.toFixed(2)}
+                             ৳{medicine.basePrice.toFixed(2)}
                           </span>
                         )}
                         <p className="text-xs text-gray-500 cursor-text">per {medicine.unit || 'unit'}</p>
