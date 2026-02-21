@@ -6,15 +6,15 @@ import { HomeMedicine } from "@/services/home.service";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ShoppingCart, 
-  Star, 
-  Heart, 
-  Eye, 
-  Package, 
+import {
+  ShoppingCart,
+  Star,
+  Heart,
+  Eye,
+  Package,
   ArrowRight,
   Shield,
-  Truck 
+  Truck
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -46,10 +46,11 @@ export const FeaturedMedicines = ({ medicines }: FeaturedMedicinesProps) => {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-BD', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'BDT',
       minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(price);
   };
 
@@ -59,13 +60,12 @@ export const FeaturedMedicines = ({ medicines }: FeaturedMedicinesProps) => {
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            className={`h-3.5 w-3.5 ${
-              i < Math.floor(rating)
+            className={`h-3.5 w-3.5 ${i < Math.floor(rating)
                 ? "text-yellow-400 fill-yellow-400"
                 : i < rating
-                ? "text-yellow-400 fill-yellow-400/50"
-                : "text-gray-300"
-            }`}
+                  ? "text-yellow-400 fill-yellow-400/50"
+                  : "text-gray-300"
+              }`}
           />
         ))}
         <span className="ml-1 text-xs text-gray-500">({rating.toFixed(1)})</span>
@@ -170,7 +170,7 @@ export const FeaturedMedicines = ({ medicines }: FeaturedMedicinesProps) => {
                 <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">
                   {medicine.name}
                 </h3>
-                
+
                 <p className="text-xs text-gray-500 mb-2 line-clamp-2">
                   {medicine.description}
                 </p>
@@ -208,7 +208,7 @@ export const FeaturedMedicines = ({ medicines }: FeaturedMedicinesProps) => {
                 </div>
 
                 {/* Add to Cart Button */}
-                <Button 
+                <Button
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
                   onClick={() => {
                     toast.success(`${medicine.name} added to cart`);

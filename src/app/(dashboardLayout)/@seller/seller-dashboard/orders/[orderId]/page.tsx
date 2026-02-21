@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getOrderById } from "@/actions/order.action";
-import { 
+import {
   Package,
   Clock,
   CheckCircle,
@@ -90,7 +90,7 @@ export default function OrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const orderId = params.orderId as string;
-  
+
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,11 +112,11 @@ export default function OrderDetailsPage() {
       setLoading(true);
       setError(null);
       const result = await getOrderById(orderId);
-      
+
       if (result.error) {
         throw new Error(result.error.message);
       }
-      
+
       if (result.data) {
         setOrder(result.data);
       } else {
@@ -198,9 +198,9 @@ export default function OrderDetailsPage() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-BD', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'BDT',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(price);
@@ -220,8 +220,8 @@ export default function OrderDetailsPage() {
 
   // Check if a customer review has a seller reply
   const hasSellerReply = (reviews: Review[], customerReviewId: string) => {
-    return reviews.some(review => 
-      review.seller && 
+    return reviews.some(review =>
+      review.seller &&
       review.id !== customerReviewId
     );
   };
@@ -229,8 +229,8 @@ export default function OrderDetailsPage() {
   // Find unreplied customer reviews
   const getUnrepliedReviews = (reviews?: Review[]) => {
     if (!reviews) return [];
-    return reviews.filter(review => 
-      review.customer && 
+    return reviews.filter(review =>
+      review.customer &&
       !hasSellerReply(reviews, review.id)
     );
   };
@@ -259,8 +259,8 @@ export default function OrderDetailsPage() {
             <h3 className="text-lg font-semibold text-red-800 mb-2">Error Loading Order</h3>
             <p className="text-red-600 mb-4">{error}</p>
             <div className="flex gap-3 justify-center">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => router.push("/seller-dashboard/orders")}
                 className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
               >
@@ -286,7 +286,7 @@ export default function OrderDetailsPage() {
             <Package className="h-16 w-16 text-emerald-300 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-emerald-800 mb-2">Order Not Found</h3>
             <p className="text-emerald-600 mb-4">The order you are looking for does not exist.</p>
-            <Button 
+            <Button
               onClick={() => router.push("/seller-dashboard/orders")}
               className="bg-emerald-600 hover:bg-emerald-700"
             >
@@ -340,7 +340,7 @@ export default function OrderDetailsPage() {
                   <p className="text-2xl font-bold text-emerald-900">{formatPrice(order.totalAmount)}</p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-500 mb-1">Order Date</p>
@@ -377,7 +377,7 @@ export default function OrderDetailsPage() {
                 {order.items.map((item) => {
                   const avgRating = getAverageRating(item.medicine?.reviews);
                   const unrepliedReviews = getUnrepliedReviews(item.medicine?.reviews);
-                  
+
                   return (
                     <div key={item.id} className="border border-emerald-100 rounded-lg p-4">
                       <div className="flex gap-4">
@@ -392,7 +392,7 @@ export default function OrderDetailsPage() {
                             <Package className="h-10 w-10 text-emerald-400" />
                           </div>
                         )}
-                        
+
                         <div className="flex-1">
                           <div className="flex justify-between items-start">
                             <div>
@@ -412,7 +412,7 @@ export default function OrderDetailsPage() {
                               </p>
                             </div>
                           </div>
-                          
+
                           {/* Reviews Section */}
                           {item.medicine?.reviews && item.medicine.reviews.length > 0 && (
                             <div className="mt-3 pt-3 border-t border-emerald-100">
@@ -430,21 +430,20 @@ export default function OrderDetailsPage() {
                                   </Badge>
                                 )}
                               </div>
-                              
+
                               <div className="space-y-3">
                                 {item.medicine.reviews.slice(0, 2).map((review) => {
                                   const isCustomerReview = !!review.customer;
                                   const isSellerReply = !!review.seller;
                                   const hasReply = hasSellerReply(item.medicine?.reviews || [], review.id);
-                                  
+
                                   return (
-                                    <div 
-                                      key={review.id} 
-                                      className={`rounded p-3 ${
-                                        isSellerReply 
-                                          ? 'ml-6 bg-blue-50/50 border-l-4 border-blue-200' 
+                                    <div
+                                      key={review.id}
+                                      className={`rounded p-3 ${isSellerReply
+                                          ? 'ml-6 bg-blue-50/50 border-l-4 border-blue-200'
                                           : 'bg-emerald-50/50'
-                                      }`}
+                                        }`}
                                     >
                                       <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
@@ -473,18 +472,18 @@ export default function OrderDetailsPage() {
                                           </div>
                                         )}
                                       </div>
-                                      
+
                                       {review.comment && (
                                         <div className="mb-2">
                                           <p className="text-sm text-gray-700">{review.comment}</p>
                                         </div>
                                       )}
-                                      
+
                                       <div className="flex items-center justify-between">
                                         <p className="text-xs text-gray-500">
                                           {formatDate(review.createdAt)}
                                         </p>
-                                        
+
                                         {isCustomerReview && !hasReply && (
                                           <Button
                                             size="sm"
@@ -496,7 +495,7 @@ export default function OrderDetailsPage() {
                                             Reply
                                           </Button>
                                         )}
-                                        
+
                                         {isSellerReply && (
                                           <Badge variant="outline" className="h-5 text-xs border-blue-200 text-blue-700">
                                             <ThumbsUp className="h-3 w-3 mr-1" />
@@ -507,13 +506,13 @@ export default function OrderDetailsPage() {
                                     </div>
                                   );
                                 })}
-                                
+
                                 {/* View More Reviews Button */}
                                 {item.medicine.reviews.length > 2 && (
                                   <div className="flex justify-center">
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
                                       className="text-emerald-700 hover:bg-emerald-50"
                                     >
                                       <MessageSquare className="h-4 w-4 mr-2" />
@@ -521,7 +520,7 @@ export default function OrderDetailsPage() {
                                     </Button>
                                   </div>
                                 )}
-                                
+
                                 {/* Reply to All Button if there are unreplied reviews */}
                                 {unrepliedReviews.length > 0 && (
                                   <div className="pt-2 border-t border-emerald-100">
@@ -532,7 +531,7 @@ export default function OrderDetailsPage() {
                                         const firstUnreplied = unrepliedReviews[0];
                                         if (firstUnreplied) {
                                           handleReplyClick(
-                                            firstUnreplied, 
+                                            firstUnreplied,
                                             firstUnreplied.customer?.name || "Customer"
                                           );
                                         }
@@ -553,7 +552,7 @@ export default function OrderDetailsPage() {
                   );
                 })}
               </div>
-              
+
               {/* Order Summary */}
               <div className="mt-6 pt-6 border-t border-emerald-200">
                 <h4 className="font-semibold text-emerald-900 mb-3">Order Summary</h4>
@@ -629,11 +628,10 @@ export default function OrderDetailsPage() {
                   <p className="text-sm text-gray-500 mb-1">Status</p>
                   <div className="flex items-center gap-2">
                     {getStatusIcon(order.status)}
-                    <p className={`font-medium ${
-                      order.status === "DELIVERED" ? "text-green-600" :
-                      order.status === "CANCELLED" ? "text-red-600" :
-                      "text-emerald-700"
-                    }`}>
+                    <p className={`font-medium ${order.status === "DELIVERED" ? "text-green-600" :
+                        order.status === "CANCELLED" ? "text-red-600" :
+                          "text-emerald-700"
+                      }`}>
                       {getStatusText(order.status)}
                     </p>
                   </div>

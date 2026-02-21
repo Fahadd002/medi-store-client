@@ -189,10 +189,11 @@ export default function ShopMedicinesPage() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-BD', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'BDT',
       minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(price);
   };
 
@@ -614,7 +615,7 @@ export default function ShopMedicinesPage() {
                                 unit: medicine.unit,
                                 stock: medicine.stock,
                                 sellerId: medicine.sellerId,
-                                sellerName: medicine.seller?.name, 
+                                sellerName: medicine.seller?.name,
                               })}
                               disabled={(medicine.stock || 0) <= 0}
                               className="w-full h-8 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-xs font-medium cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"

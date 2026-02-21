@@ -10,13 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { toast } from "sonner";
 import { createOrder } from "@/actions/order.action";
-import { 
-  ArrowLeft, 
-  ShoppingCart, 
-  MapPin, 
+import {
+  ArrowLeft,
+  ShoppingCart,
+  MapPin,
   Shield,
   Truck,
-  CheckCircle 
+  CheckCircle
 } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 
@@ -41,7 +41,7 @@ export default function CheckoutPage() {
 
     onSubmit: async ({ value }) => {
       console.log("Form submitted with values:", value);
-      
+
       // Basic validation
       if (!value.fullName || value.fullName.trim().length < 2) {
         toast.error("Full name must be at least 2 characters");
@@ -78,14 +78,14 @@ export default function CheckoutPage() {
           sellerId: sellerId,
           shippingAddress: `${value.address}, ${value.city}, ${value.state} ${value.zipCode}`.trim(),
           items: cartItems.map(item => {
-            const finalPrice = item.discountPercent 
+            const finalPrice = item.discountPercent
               ? item.basePrice * (1 - item.discountPercent / 100)
               : item.basePrice;
-            
+
             return {
               medicineId: item.id,
               quantity: item.quantity,
-              price: parseFloat(finalPrice.toFixed(2)) 
+              price: parseFloat(finalPrice.toFixed(2))
             }
           })
         };
@@ -115,7 +115,7 @@ export default function CheckoutPage() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('bn-BD', {
+    return new Intl.NumberFormat('en-BD', {
       style: 'currency',
       currency: 'BDT',
       minimumFractionDigits: 2,
@@ -399,8 +399,8 @@ export default function CheckoutPage() {
                       {loading ? (
                         <span className="flex items-center justify-center">
                           <svg className="animate-spin h-3 w-3 mr-1 text-white" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                           </svg>
                           Processing...
                         </span>
@@ -429,7 +429,7 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => {
                   const itemPrice = calculateDiscountedPrice(item.basePrice, item.discountPercent);
                   const totalPrice = itemPrice * item.quantity;
-                  
+
                   return (
                     <div key={item.id} className="flex items-center gap-2 pb-2 border-b border-emerald-100">
                       {item.photoUrl && (

@@ -394,7 +394,7 @@ export default function AdminMedicinesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-violet-700">Total Value</p>
-              <p className="text-2xl font-bold text-violet-900 mt-1"> ৳{stats.totalValue.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-violet-900 mt-1">৳{stats.totalValue.toFixed(2)}</p>
             </div>
             <div className="p-3 bg-violet-100 rounded-xl">
               <DollarSign className="h-5 w-5 text-violet-600" />

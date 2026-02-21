@@ -127,7 +127,7 @@ export default function OrdersPage() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('bn-BD', {
+    return new Intl.NumberFormat('en-BD', {
       style: 'currency',
       currency: 'BDT',
       minimumFractionDigits: 2,
