@@ -8,14 +8,24 @@ import type {
 } from "@/types/order.types";
 import { updateTag } from "next/cache";
 
-export const getOrders = async (
-  params?: GetOrdersParams,
+
+export const getAllOrders = async (
+  params?: {
+    search?: string;
+    sellerId?: string;
+    status?: OrderStatus;
+    page?: string;
+    limit?: string;
+    skip?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  },
   options?: {
     cache?: RequestCache;
     revalidate?: number;
   }
 ) => {
-  return await orderService.getOrders(params, options);
+  return await orderService.getAllOrders(params, options);
 };
 
 export const getMyOrders = async (

@@ -5,14 +5,24 @@ import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
 
-
 export const orderService = {
-  getOrders: async (
-    params?: GetOrdersParams,
+  getAllOrders: async (
+    params?: {
+      search?: string;
+      sellerId?: string;
+      status?: OrderStatus;
+      page?: string;
+      limit?: string;
+      skip?: string;
+      sortBy?: string;
+      sortOrder?: "asc" | "desc";
+    },
     options?: ServiceOptions
   ) => {
     try {
-      const url = new URL(`${API_URL}/orders`);
+      const url = new URL(`${API_URL}/orders/admin/all`);
+      const cookieStore = await cookies();
+      const cookieHeader = cookieStore.toString();
 
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -22,25 +32,30 @@ export const orderService = {
         });
       }
 
-      const config: RequestInit = {};
+      const config: RequestInit = {
+        headers: {
+          Cookie: cookieHeader,
+        }
+      };
+
       if (options?.cache) config.cache = options.cache;
       if (options?.revalidate) config.next = { revalidate: options.revalidate };
-      config.next = { ...config.next, tags: ["orders"] };
+      config.next = { ...config.next, tags: ["admin-orders"] };
 
       const res = await fetch(url.toString(), config);
-      
+
       if (!res.ok) {
         throw new Error(`Failed to fetch orders: ${res.statusText}`);
       }
-      
+
       const data = await res.json();
       return { data, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to fetch orders" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to fetch orders"
+        }
       };
     }
   },
@@ -68,25 +83,25 @@ export const orderService = {
           Cookie: cookieHeader,
         }
       };
-      
+
       if (options?.cache) config.cache = options.cache;
       if (options?.revalidate) config.next = { revalidate: options.revalidate };
       config.next = { ...config.next, tags: ["my-orders"] };
 
       const res = await fetch(url.toString(), config);
-      
+
       if (!res.ok) {
         throw new Error(`Failed to fetch user orders: ${res.statusText}`);
       }
-      
+
       const data = await res.json();
       return { data, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to fetch user orders" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to fetch user orders"
+        }
       };
     }
   },
@@ -114,25 +129,25 @@ export const orderService = {
           Cookie: cookieHeader,
         }
       };
-      
+
       if (options?.cache) config.cache = options.cache;
       if (options?.revalidate) config.next = { revalidate: options.revalidate };
       config.next = { ...config.next, tags: ["seller-orders"] };
 
       const res = await fetch(url.toString(), config);
-      
+
       if (!res.ok) {
         throw new Error(`Failed to fetch seller orders: ${res.statusText}`);
       }
-      
+
       const data = await res.json();
       return { data, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to fetch seller orders" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to fetch seller orders"
+        }
       };
     }
   },
@@ -148,19 +163,19 @@ export const orderService = {
           Cookie: cookieHeader,
         },
       });
-      
+
       if (!res.ok) {
         throw new Error(`Failed to fetch order: ${res.statusText}`);
       }
-      
+
       const data = await res.json();
       return { data, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to fetch order" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to fetch order"
+        }
       };
     }
   },
@@ -181,18 +196,18 @@ export const orderService = {
       });
 
       const result = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(result.error?.message || "Failed to create order");
       }
 
       return { data: result, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to create order" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to create order"
+        }
       };
     }
   },
@@ -211,18 +226,18 @@ export const orderService = {
       });
 
       const result = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(result.error?.message || "Failed to cancel order");
       }
 
       return { data: result, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to cancel order" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to cancel order"
+        }
       };
     }
   },
@@ -243,18 +258,18 @@ export const orderService = {
       });
 
       const result = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(result.error?.message || "Failed to update order status");
       }
 
       return { data: result, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to update order status" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to update order status"
+        }
       };
     }
   },
@@ -275,19 +290,19 @@ export const orderService = {
           Cookie: cookieHeader,
         },
       });
-      
+
       if (!res.ok) {
         throw new Error(`Failed to fetch order stats: ${res.statusText}`);
       }
-      
+
       const data = await res.json();
       return { data, error: null };
     } catch (error) {
-      return { 
-        data: null, 
-        error: { 
-          message: error instanceof Error ? error.message : "Failed to fetch order statistics" 
-        } 
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Failed to fetch order statistics"
+        }
       };
     }
   },

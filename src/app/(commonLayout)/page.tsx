@@ -1,4 +1,3 @@
-// app/page.tsx
 import { CategorySection } from "@/components/modules/homepage/CategorySection";
 import { FeaturedMedicines } from "@/components/modules/homepage/FeaturedMedicines";
 import { HealthTips } from "@/components/modules/homepage/HealthTips";

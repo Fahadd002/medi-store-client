@@ -666,7 +666,7 @@ export default function OrderDetailsPage() {
                                             </div>
                                             <div className="flex gap-1">
                                               <Button variant="outline" size="sm" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-7 px-2" asChild>
-                                                <Link href={`/medicine/${item.medicineId}`}>View</Link>
+                                                <Link href={`/shop/${item.medicineId}`}>View</Link>
                                               </Button>
                                               <Button variant="outline" size="sm" onClick={() => handleDeleteReview(existingReview, item.medicine?.name || `Medicine ${item.medicineId}`)} className="border-red-300 text-red-700 hover:bg-red-50 h-7 px-2">
                                                 <Trash2 className="h-3 w-3" />

@@ -145,7 +145,7 @@ export const FeaturedMedicines = ({ medicines }: FeaturedMedicinesProps) => {
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => router.push(`/medicines/${medicine.id}`)}
+                    onClick={() => router.push(`/shop/${medicine.id}`)}
                     className="bg-white text-gray-900 hover:bg-emerald-50"
                   >
                     <Eye className="h-4 w-4 mr-1" />
@@ -206,13 +206,10 @@ export const FeaturedMedicines = ({ medicines }: FeaturedMedicinesProps) => {
                     <span>Authentic</span>
                   </div>
                 </div>
-
-                {/* Add to Cart Button */}
                 <Button
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
                   onClick={() => {
                     toast.success(`${medicine.name} added to cart`);
-                    // Add to cart logic here
                   }}
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />

@@ -4,23 +4,48 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getMedicineById } from '@/actions/medicine.action';
 import Image from 'next/image';
-import { Star, Package, Calendar, Building, User, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { 
+  Star, 
+  Package, 
+  Calendar, 
+  Building, 
+  User, 
+  ShoppingCart, 
+  Plus, 
+  Minus,
+  ChevronDown,
+  ChevronUp,
+  MessageCircle,
+  Store
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/cart-context';
 
 // Define types for the medicine data
+interface ReviewReply {
+  id: string;
+  comment: string;
+  createdAt: string;
+  seller: {
+    id: string;
+    name: string;
+    image: string | null;
+  } | null;
+}
+
 interface Review {
   id: string;
   rating: number;
   comment: string;
   createdAt: string;
-  parentId: string | null; // Add this field
+  parentId: string | null;
   customer: {
     id: string;
     name: string;
     image: string | null;
-  };
+  } | null;
+  replies?: ReviewReply[];
 }
 
 interface Category {
@@ -34,7 +59,7 @@ interface Seller {
   name: string;
   email: string;
   phone: string;
-  image: string;
+  image: string | null;
 }
 
 interface MedicineData {
@@ -80,6 +105,7 @@ const MedicineDetails = () => {
   const [medicine, setMedicine] = useState<MedicineData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
 
   // Get cart functions from context
   const { cart, addToCart, removeFromCart, updateQuantity } = useCart();
@@ -143,6 +169,19 @@ const MedicineDetails = () => {
       console.error('Error formatting date:', error, dateString);
       return 'Invalid date';
     }
+  };
+
+  // Toggle review expansion
+  const toggleReview = (reviewId: string) => {
+    setExpandedReviews(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(reviewId)) {
+        newSet.delete(reviewId);
+      } else {
+        newSet.add(reviewId);
+      }
+      return newSet;
+    });
   };
 
   // Handle add to cart
@@ -482,50 +521,111 @@ const MedicineDetails = () => {
               </div>
             </div>
 
-            {/* Reviews List*/}
+            {/* Reviews List with Replies */}
             {mainReviews.length > 0 && (
               <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Customer Reviews ({mainReviews.length})</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5" />
+                  Customer Reviews ({mainReviews.length})
+                </h3>
                 <div className="space-y-6">
-                  {mainReviews.map((review) => (
-                    <div key={review.id} className="pb-6 border-b last:border-0 last:pb-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                            {review.customer?.image ? (
-                              <Image
-                                src={review.customer.image}
-                                alt={review.customer?.name || 'Anonymous'}
-                                width={40}
-                                height={40}
-                                className="rounded-full"
-                              />
+                  {mainReviews.map((review) => {
+                    const hasReplies = review.replies && review.replies.length > 0;
+                    const isExpanded = expandedReviews.has(review.id);
+                    
+                    return (
+                      <div key={review.id} className="pb-6 border-b last:border-0 last:pb-0">
+                        {/* Main Review */}
+                        <div className="mb-3">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                                {review.customer?.image ? (
+                                  <Image
+                                    src={review.customer.image}
+                                    alt={review.customer?.name || 'Anonymous'}
+                                    width={40}
+                                    height={40}
+                                    className="object-cover"
+                                  />
+                                ) : (
+                                  <User className="w-5 h-5 text-gray-400" />
+                                )}
+                              </div>
+                              <div>
+                                <h4 className="font-medium">{review.customer?.name || 'Anonymous'}</h4>
+                                <div className="flex items-center mt-1">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`w-3 h-3 ${i < (review.rating || 0)
+                                          ? 'text-yellow-400 fill-yellow-400'
+                                          : 'text-gray-300'
+                                        }`}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            <span className="text-xs text-gray-500">
+                              {formatDateSafe(review.createdAt)}
+                            </span>
+                          </div>
+                          <p className="text-gray-700 text-sm mt-2">{review.comment}</p>
+                        </div>
+
+                        {/* Replies Section */}
+                        {hasReplies && (
+                          <div className="ml-8 mt-3 space-y-3">
+                            {isExpanded ? (
+                              <>
+                                {review.replies?.map((reply) => (
+                                  <div key={reply.id} className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+                                    <div className="flex items-start gap-2">
+                                      <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <Store className="w-3 h-3 text-blue-600" />
+                                      </div>
+                                      <div className="flex-1">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <div className="flex items-center gap-1">
+                                            <span className="font-medium text-xs text-blue-800">
+                                              {reply.seller?.name || 'Seller'}
+                                            </span>
+                                            <span className="text-[10px] bg-blue-200 text-blue-700 px-1.5 py-0.5 rounded">
+                                              Seller Response
+                                            </span>
+                                          </div>
+                                          <span className="text-[10px] text-gray-500">
+                                            {formatDateSafe(reply.createdAt)}
+                                          </span>
+                                        </div>
+                                        <p className="text-xs text-gray-700">{reply.comment}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                                <button
+                                  onClick={() => toggleReview(review.id)}
+                                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 mt-1"
+                                >
+                                  <ChevronUp className="w-3 h-3" />
+                                  Hide replies
+                                </button>
+                              </>
                             ) : (
-                              <User className="w-5 h-5 text-gray-400" />
+                              <button
+                                onClick={() => toggleReview(review.id)}
+                                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
+                              >
+                                <ChevronDown className="w-3 h-3" />
+                                View {review.replies?.length} {review.replies?.length === 1 ? 'reply' : 'replies'}
+                              </button>
                             )}
                           </div>
-                          <div>
-                            <h4 className="font-medium">{review.customer?.name || 'Anonymous'}</h4>
-                            <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-4 h-4 ${i < (review.rating || 0)
-                                      ? 'text-yellow-400 fill-yellow-400'
-                                      : 'text-gray-300'
-                                    }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <span className="text-sm text-gray-500">
-                          {formatDateSafe(review.createdAt)}
-                        </span>
+                        )}
                       </div>
-                      <p className="text-gray-700 mt-2">{review.comment}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}

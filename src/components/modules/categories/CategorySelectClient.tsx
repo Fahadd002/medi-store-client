@@ -16,18 +16,6 @@ interface CategoryItem {
   label: string;
 }
 
-// Define the expected response type from the API
-interface CategoryDropdownResponse {
-  data?: Array<{
-    id: string;
-    name: string;
-    value?: string;
-    label?: string;
-  }>;
-}
-
-type ApiResponse = CategoryDropdownResponse | Array<{ id: string; name: string; value?: string; label?: string; }>;
-
 interface Props {
   value?: string;
   onValueChange?: (value: string) => void;
@@ -35,6 +23,8 @@ interface Props {
   disabled?: boolean;
   className?: string;
 }
+
+const ALL_CATEGORIES_VALUE = "all";
 
 export default function CategorySelectClient({
   value,
@@ -60,7 +50,6 @@ export default function CategorySelectClient({
           // If data is directly an array
           categoryList = data;
         } else if (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
-
           categoryList = data.data;
         } else {
           categoryList = [];
@@ -85,17 +74,33 @@ export default function CategorySelectClient({
     return () => { mounted = false; };
   }, []);
 
+  // Handle clearing the selection
+  const handleValueChange = (newValue: string) => {
+    if (newValue === ALL_CATEGORIES_VALUE) {
+      onValueChange?.(""); // Pass empty string to parent for "all"
+    } else {
+      onValueChange?.(newValue);
+    }
+  };
+
+  // Convert parent value to component value
+  const displayValue = value === "" ? ALL_CATEGORIES_VALUE : value;
+
   return (
     <div className={className}>
       <Select
-        value={value ?? ""}
-        onValueChange={(v) => onValueChange?.(String(v))}
+        value={displayValue}
+        onValueChange={handleValueChange}
         disabled={disabled || loading}
       >
         <SelectTrigger className="border-green-300 focus:ring-green-500 focus:border-green-500 h-9 text-sm w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
+          {/* Add "All Categories" option with special value */}
+          <SelectItem value={ALL_CATEGORIES_VALUE} className="text-gray-500">
+            All Categories
+          </SelectItem>
           {items.map((it) => (
             <SelectItem key={it.value} value={it.value}>
               {it.label}
