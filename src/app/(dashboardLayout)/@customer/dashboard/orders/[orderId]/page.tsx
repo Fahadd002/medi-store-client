@@ -275,7 +275,7 @@ export default function OrderDetailsPage() {
   
   const scrollToReviews = () => {
     setActiveTab("reviews");
-    setTimeout(() => { reviewsSectionRef.current?.scrollIntoView({ behavior: "smooth" }); router.push(`/orders/${orderId}#reviews`, { scroll: false }); }, 100);
+    setTimeout(() => { reviewsSectionRef.current?.scrollIntoView({ behavior: "smooth" }); router.push(`/dashboard/orders/${orderId}#reviews`, { scroll: false }); }, 100);
   };
 
   const getPendingReviewsCount = () => {
@@ -305,7 +305,7 @@ export default function OrderDetailsPage() {
           <Package className="h-12 w-12 text-emerald-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-emerald-800 mb-2">Order Not Found</h3>
           <p className="text-emerald-600 mb-4 text-sm">The order you are looking for does not exist.</p>
-          <Link href="/orders">
+          <Link href="/dashboard/orders">
             <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
               <ArrowLeft className="h-3 w-3 mr-2" /> Back to Orders
             </Button>
@@ -325,7 +325,7 @@ export default function OrderDetailsPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Link href="/orders">
+                <Link href="/dashboard/orders">
                   <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 h-8 px-2">
                     <ArrowLeft className="h-3 w-3 mr-1" /> Back
                   </Button>

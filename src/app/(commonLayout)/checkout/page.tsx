@@ -98,7 +98,7 @@ export default function CheckoutPage() {
           toast.success("Order placed successfully!");
           clearCart();
           // Redirect to orders page or home
-          router.push("/orders");
+          router.push("/dashboard/orders");
         }
       } catch (error) {
         console.error("Order creation error:", error);

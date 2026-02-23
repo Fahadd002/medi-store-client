@@ -1,11 +1,6 @@
-import React from 'react';
+import { redirect } from "next/navigation";
 
-const Dashboard = () => {
-    return (
-        <div>
-            <h1>This is Cusetomer Dashboard</h1>
-        </div>
-    );
-};
-
-export default Dashboard;
+export default function Dashboard() {
+  redirect("/dashboard/orders");
+  return null;
+}

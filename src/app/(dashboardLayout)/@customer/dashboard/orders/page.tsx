@@ -1,4 +1,3 @@
-// app/orders/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -285,7 +284,7 @@ export default function OrdersPage() {
             {filteredOrders.map((order) => (
               <Card key={order.id} className="border-emerald-200 overflow-hidden hover:border-emerald-300 transition-all duration-300 hover:shadow-lg">
                 {/* Order Header - Clickable Area */}
-                <Link href={`/orders/${order.id}`} className="block">
+                <Link href={`/dashboard/orders/${order.id}`} className="block">
                   <div className="p-6 border-b border-emerald-100 bg-gradient-to-r from-emerald-50/50 to-white hover:from-emerald-50 hover:to-emerald-50/30 transition-all">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                       <div className="flex-1">
@@ -389,7 +388,7 @@ export default function OrdersPage() {
 
                     {/* Order Actions */}
                     <div className="space-y-4">
-                      <Link href={`/orders/${order.id}`} className="block">
+                      <Link href={`/dashboard/orders/${order.id}`} className="block">
                         <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
                           <Eye className="h-4 w-4 mr-2" />
                           View Order Details
@@ -398,7 +397,7 @@ export default function OrdersPage() {
 
                       {order.status === "DELIVERED" && (
                         <Link 
-                          href={`/orders/${order.id}#reviews`} 
+                          href={`/dashboard/orders/${order.id}#reviews`} 
                           className="block"
                         >
                           <Button variant="outline" className="w-full border-emerald-300 text-emerald-700 hover:bg-emerald-50">
